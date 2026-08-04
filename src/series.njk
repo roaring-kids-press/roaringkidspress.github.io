@@ -1,0 +1,26 @@
+---
+layout: layouts/base.njk
+title: Series
+permalink: /series/index.html
+description: "Explore the book series from Roaring Kids Press."
+---
+<div class="wrap page-head">
+  <p class="label">Our worlds</p>
+  <h1>Series</h1>
+  <p class="hero-lede">Each series follows one character across many books, so young readers get to grow up with a friend they know by heart.</p>
+</div>
+
+<section class="section" style="padding-top:1rem;">
+  <div class="wrap">
+    <div class="series-grid">
+      {% for s in seriesList %}
+      <a class="series-card" href="/series/{{ s.slug }}/" style="--accent: {{ s.accent }};">
+        <span class="ages">Ages {{ s.ages }} · {{ s.brand }} series</span>
+        <h3>{{ s.name }}</h3>
+        <p>{{ s.blurb }}</p>
+        <span class="more">Explore the series →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

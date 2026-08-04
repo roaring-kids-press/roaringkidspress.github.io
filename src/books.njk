@@ -1,0 +1,49 @@
+---
+layout: layouts/base.njk
+title: Books
+permalink: /books/index.html
+description: "Browse every picture book and early reader from Roaring Kids Press."
+---
+<div class="wrap page-head">
+  <p class="label">The catalog</p>
+  <h1>All books</h1>
+  <p class="hero-lede">Filter by series, or browse the whole shelf. Every title shows its available formats and where to buy.</p>
+</div>
+
+<section class="section" style="padding-top:1rem;">
+  <div class="wrap">
+    <div class="filters" role="group" aria-label="Filter by series">
+      <button class="is-active" data-filter="all">All</button>
+      {% for s in seriesList %}
+      <button data-filter="{{ s.slug }}">{{ s.name }}</button>
+      {% endfor %}
+    </div>
+
+    <div class="book-grid" id="book-grid">
+      {% for book in collections.books %}
+      {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
+      <a class="book-card" href="{{ book.url }}" data-series="{{ book.data.series }}">
+        <div class="book-cover" style="--accent: {{ bs.accent }};">
+          <span class="ph-title">{{ book.data.title }}</span>
+          <span class="ph-tag">{{ bs.name }}</span>
+        </div>
+        <h3>{{ book.data.title }}</h3>
+        <span class="book-meta">Ages {{ book.data.ages }} · {{ book.data.pages }} pp</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  const btns = document.querySelectorAll('.filters button');
+  const cards = document.querySelectorAll('#book-grid .book-card');
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => x.classList.remove('is-active'));
+    b.classList.add('is-active');
+    const f = b.dataset.filter;
+    cards.forEach((c) => {
+      c.style.display = (f === 'all' || c.dataset.series === f) ? '' : 'none';
+    });
+  }));
+</script>

@@ -1,0 +1,38 @@
+---
+layout: layouts/base.njk
+---
+{% set thisSeries = seriesList | selectattr("slug", "equalto", series) | first %}
+<article class="wrap book-detail">
+  <div class="cover-lg" style="--accent: {{ thisSeries.accent }};">
+    <span class="ph-title">{{ title }}</span>
+  </div>
+
+  <div class="book-info">
+    <a class="series-pill" href="/series/{{ series }}/">{{ thisSeries.name }}</a>
+    <h1>{{ title }}</h1>
+
+    <div class="spec">
+      <div><span class="label">Ages</span>{{ ages }}</div>
+      <div><span class="label">Pages</span>{{ pages }}</div>
+      <div><span class="label">Format</span>{{ readingLevel }}</div>
+    </div>
+
+    {{ content | safe }}
+
+    <section class="availability">
+      <h2>Where to find it</h2>
+      <ul class="buy-list">
+        {% for buy in availability %}
+        <li class="buy-row">
+          <span class="buy-info">
+            <span class="fmt">{{ buy.format }}<span class="fmt-badge {{ buy.type }}">{{ buy.type }}</span></span>
+            <span class="via">Available via {{ buy.retailer }}</span>
+          </span>
+          <a class="btn" href="{{ buy.url }}">Buy on {{ buy.retailer }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="label" style="margin-top:1rem;">Replace the # links with your live KDP / IngramSpark / Apple Books URLs.</p>
+    </section>
+  </div>
+</article>

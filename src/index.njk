@@ -1,0 +1,69 @@
+---
+layout: layouts/base.njk
+title: false
+---
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="keywords">{{ site.keywords }}</p>
+      <h1>Big stories for <span>small readers.</span></h1>
+      <p class="hero-lede">Roaring Kids Press is an independent children's book publisher. We make picture books and early readers that take feelings seriously, spark imagination, and turn everyday moments into adventures.</p>
+      <div class="hero-cta">
+        <a class="btn" href="/books/">Browse our books</a>
+        <a class="btn btn--ghost" href="/about/">Our story</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="book-stack">
+        <span class="vol">Adventures</span>
+        <span class="vol">Grow</span>
+        <span class="vol">Learn</span>
+        <span class="vol">More soon…</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">Our series</p>
+      <h2>Worlds worth returning to</h2>
+      <p>Every series is built around a character kids want to grow up alongside. Our first is Zavi — a small boy with a big heart — and there's plenty more on the way.</p>
+    </div>
+    <div class="series-grid">
+      {% for s in seriesList %}
+      <a class="series-card" href="/series/{{ s.slug }}/" style="--accent: {{ s.accent }};">
+        <span class="ages">Ages {{ s.ages }} · {{ s.brand }} series</span>
+        <h3>{{ s.name }}</h3>
+        <p>{{ s.blurb }}</p>
+        <span class="more">Explore the series →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">On the shelf</p>
+      <h2>Latest books</h2>
+    </div>
+    <div class="book-grid">
+      {% for book in collections.books | reverse %}
+      {% if loop.index <= 4 %}
+      {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
+      <a class="book-card" href="{{ book.url }}">
+        <div class="book-cover" style="--accent: {{ bs.accent }};">
+          <span class="ph-title">{{ book.data.title }}</span>
+          <span class="ph-tag">{{ bs.name }}</span>
+        </div>
+        <h3>{{ book.data.title }}</h3>
+        <span class="book-meta">Ages {{ book.data.ages }}</span>
+      </a>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

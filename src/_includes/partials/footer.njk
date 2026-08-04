@@ -1,0 +1,32 @@
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <span class="brand-name">Roaring Kids Press</span>
+      <p class="footer-keywords">{{ site.keywords }}</p>
+    </div>
+
+    <div class="footer-signup">
+      <h2>Be first to know</h2>
+      <p>New books, printables, and behind-the-scenes peeks — a few times a year, never spam.</p>
+      <!-- Replace action + hidden field with your MailerLite / Buttondown / Formspree embed.
+           A static site can't process this itself; the form posts to a hosted service. -->
+      <form class="signup" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <label class="visually-hidden" for="email">Email address</label>
+        <input id="email" type="email" name="email" placeholder="you@example.com" required />
+        <button type="submit">Join the list</button>
+      </form>
+    </div>
+
+    <div class="footer-contact">
+      <h2>Say hello</h2>
+      <p><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+      <p class="footer-links">
+        <a href="/retailers/">Retailers &amp; Libraries</a> ·
+        <a href="/contact/">Press</a>
+      </p>
+    </div>
+  </div>
+  <div class="wrap footer-legal">
+    <p>&copy; {{ "" | year }} Roaring Kids Press. All rights reserved.</p>
+  </div>
+</footer>

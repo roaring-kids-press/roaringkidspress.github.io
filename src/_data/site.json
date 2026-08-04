@@ -1,0 +1,15 @@
+{
+  "name": "Roaring Kids Press",
+  "tagline": "Publishing Adventures for Young Readers",
+  "keywords": "STORYTELLING · IMAGINATION · ADVENTURE",
+  "url": "https://www.roaringkidspress.com",
+  "email": "hello@roaringkidspress.com",
+  "description": "Roaring Kids Press is an independent children's book publisher creating picture books and early readers full of storytelling, imagination, and adventure.",
+  "nav": [
+    { "text": "Books", "url": "/books/" },
+    { "text": "Series", "url": "/series/" },
+    { "text": "About", "url": "/about/" },
+    { "text": "Retailers & Libraries", "url": "/retailers/" },
+    { "text": "Contact", "url": "/contact/" }
+  ]
+}

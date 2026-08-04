@@ -1,0 +1,38 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: seriesList
+  size: 1
+  alias: s
+permalink: "/series/{{ s.slug }}/index.html"
+eleventyComputed:
+  title: "{{ s.name }}"
+  description: "{{ s.blurb }}"
+---
+<div class="wrap page-head" style="border-top: 6px solid {{ s.accent }};">
+  <p class="label">{{ s.brand }} series · Ages {{ s.ages }}</p>
+  <h1>{{ s.name }}</h1>
+  <p class="hero-lede">{{ s.blurb }}</p>
+</div>
+
+<section class="section" style="padding-top:1rem;">
+  <div class="wrap">
+    {% set books = collections.books | whereSeries(s.slug) %}
+    {% if books | length %}
+    <div class="book-grid">
+      {% for book in books %}
+      <a class="book-card" href="{{ book.url }}">
+        <div class="book-cover" style="--accent: {{ s.accent }};">
+          <span class="ph-title">{{ book.data.title }}</span>
+          <span class="ph-tag">{{ s.name }}</span>
+        </div>
+        <h3>{{ book.data.title }}</h3>
+        <span class="book-meta">Ages {{ book.data.ages }} · {{ book.data.pages }} pp</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p>Books in this series are coming soon.</p>
+    {% endif %}
+  </div>
+</section>
