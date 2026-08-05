@@ -7,6 +7,8 @@ ages: "6–8"
 pages: 40
 readingLevel: "Picture book · read-aloud"
 description: "Zavi is small, and the world feels loud. But somewhere inside every quiet kid is a roar waiting to be found."
+author: "Viral"
+isbn: "000-0-000000-00-0"
 availability:
   - format: Hardcover
     type: hardcover

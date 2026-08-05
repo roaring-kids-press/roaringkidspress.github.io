@@ -24,6 +24,33 @@ title: false
   </div>
 </section>
 
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">On the shelf</p>
+      <h2>Latest books</h2>
+    </div>
+  </div>
+  {% set marquee = collections.books | reverse %}
+  <div class="marquee" aria-label="Latest books, scrolling">
+    <div class="marquee-track">
+      {% for pass in [1, 2] %}
+      {% for book in marquee %}
+      {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
+      <a class="book-card marquee-card" href="{{ book.url }}"{% if pass == 2 %} aria-hidden="true" tabindex="-1"{% endif %}>
+        <div class="book-cover" style="--accent: {{ bs.accent }};">
+          <span class="ph-title">{{ book.data.title }}</span>
+          <span class="ph-tag">{{ bs.name }}</span>
+        </div>
+        <h3>{{ book.data.title }}</h3>
+        <span class="book-meta">Ages {{ book.data.ages }}</span>
+      </a>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 <section class="section">
   <div class="wrap">
     <div class="section-head">
@@ -39,30 +66,6 @@ title: false
         <p>{{ s.blurb }}</p>
         <span class="more">Explore the series →</span>
       </a>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="label">On the shelf</p>
-      <h2>Latest books</h2>
-    </div>
-    <div class="book-grid">
-      {% for book in collections.books | reverse %}
-      {% if loop.index <= 4 %}
-      {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
-      <a class="book-card" href="{{ book.url }}">
-        <div class="book-cover" style="--accent: {{ bs.accent }};">
-          <span class="ph-title">{{ book.data.title }}</span>
-          <span class="ph-tag">{{ bs.name }}</span>
-        </div>
-        <h3>{{ book.data.title }}</h3>
-        <span class="book-meta">Ages {{ book.data.ages }}</span>
-      </a>
-      {% endif %}
       {% endfor %}
     </div>
   </div>

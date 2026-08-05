@@ -1,0 +1,18 @@
+---
+permalink: /search-index.json
+eleventyExcludeFromCollections: true
+---
+[
+{%- for book in collections.books -%}
+{%- set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first -%}
+  {
+    "title": {{ book.data.title | dump | safe }},
+    "series": {{ bs.name | dump | safe }},
+    "seriesSlug": {{ book.data.series | dump | safe }},
+    "author": {{ (book.data.author or "") | dump | safe }},
+    "isbn": {{ (book.data.isbn or "") | dump | safe }},
+    "ages": {{ book.data.ages | dump | safe }},
+    "url": {{ book.url | dump | safe }}
+  }{% if not loop.last %},{% endif %}
+{%- endfor -%}
+]

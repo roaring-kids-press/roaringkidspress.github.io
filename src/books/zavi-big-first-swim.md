@@ -7,6 +7,8 @@ ages: "4–8"
 pages: 32
 readingLevel: "Picture book · read-aloud"
 description: "The water looks awfully big when you're standing at the edge. A warm story about first tries."
+author: "Viral"
+isbn: "000-0-000000-00-0"
 availability:
   - format: Softcover
     type: softcover

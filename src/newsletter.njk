@@ -1,0 +1,27 @@
+---
+layout: layouts/base.njk
+title: Newsletter
+permalink: /newsletter/index.html
+description: "Sign up for the Roaring Kids Press newsletter — new books, printables, and news for young readers."
+---
+<div class="wrap page-head">
+  <p class="label">Stay in the loop</p>
+  <h1>Join the Roaring Kids Press newsletter</h1>
+</div>
+
+<section class="section" style="padding-top:1rem;">
+  <div class="wrap prose">
+    <p class="hero-lede">Be first to hear about new books, free printables, and behind-the-scenes peeks — a few times a year, never spam.</p>
+
+    <!-- Replace the action + form fields with your MailerLite / Buttondown / Mailchimp embed. -->
+    <form class="signup signup--lg" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <label class="visually-hidden" for="nl-name">First name</label>
+      <input id="nl-name" type="text" name="name" placeholder="First name" />
+      <label class="visually-hidden" for="nl-email">Email address</label>
+      <input id="nl-email" type="email" name="email" placeholder="you@example.com" required />
+      <button type="submit">Join the list</button>
+    </form>
+
+    <p class="label" style="margin-top:1.5rem;">Wire this form to your email provider before launch. Until then submissions go nowhere.</p>
+  </div>
+</section>

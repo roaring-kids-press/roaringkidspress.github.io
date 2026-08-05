@@ -1,15 +1,20 @@
+{% from "partials/icons.njk" import socialIcon %}
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
       <span class="brand-name">Roaring Kids Press</span>
       <p class="footer-keywords">{{ site.keywords }}</p>
+      <ul class="social-row">
+        {% for s in site.social %}
+        <li><a href="{{ s.url }}" class="social-link social-{{ s.icon }}" aria-label="{{ s.name }}"{% if s.url == "#" %} data-placeholder="true"{% endif %}>{{ socialIcon(s.icon) }}</a></li>
+        {% endfor %}
+      </ul>
     </div>
 
     <div class="footer-signup">
       <h2>Be first to know</h2>
       <p>New books, printables, and behind-the-scenes peeks — a few times a year, never spam.</p>
-      <!-- Replace action + hidden field with your MailerLite / Buttondown / Formspree embed.
-           A static site can't process this itself; the form posts to a hosted service. -->
+      <!-- Replace action + hidden field with your MailerLite / Buttondown / Formspree embed. -->
       <form class="signup" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         <label class="visually-hidden" for="email">Email address</label>
         <input id="email" type="email" name="email" placeholder="you@example.com" required />

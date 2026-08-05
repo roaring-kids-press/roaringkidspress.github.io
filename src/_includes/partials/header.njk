@@ -9,15 +9,38 @@
         <span class="brand-tag">{{ site.tagline }}</span>
       </span>
     </a>
+
     <button class="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
+
     <nav id="site-nav" class="site-nav" aria-label="Primary">
-      <ul>
+      <ul class="nav-list">
         {% for item in site.nav %}
-        <li><a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.text }}</a></li>
+        <li class="nav-item{% if item.children %} has-submenu{% endif %}">
+          <a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}
+             {% if item.children %}aria-haspopup="true" aria-expanded="false"{% endif %}>
+            {{ item.text }}{% if item.children %}<span class="caret" aria-hidden="true">▾</span>{% endif %}
+          </a>
+          {% if item.children %}
+          <ul class="submenu">
+            {% for child in item.children %}
+            <li><a href="{{ child.url }}">{{ child.text }}</a></li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </li>
         {% endfor %}
       </ul>
+
+      <div class="nav-search">
+        <label class="visually-hidden" for="site-search">Search books</label>
+        <input id="site-search" type="search" placeholder="Title / Series / ISBN / Author" autocomplete="off" />
+        <button type="button" class="search-go" aria-label="Search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10 4a6 6 0 1 1-4.2 10.2l-3.3 3.3-1.4-1.4 3.3-3.3A6 6 0 0 1 10 4m0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8"/></svg>
+        </button>
+        <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+      </div>
     </nav>
   </div>
 </header>

@@ -7,6 +7,8 @@ ages: "6–8"
 pages: 40
 readingLevel: "Picture book · read-aloud"
 description: "A rainstorm, a stuck puppy, and the start of the best friendship Zavi never expected."
+author: "Viral"
+isbn: "000-0-000000-00-0"
 availability:
   - format: Hardcover
     type: hardcover
