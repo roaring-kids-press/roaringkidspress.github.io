@@ -1,0 +1,251 @@
+---
+layout: layouts/base.njk
+title: Story Studio
+permalink: /play/story-studio/index.html
+description: "Build your own Zavi and Momos scene — drag stickers onto the page and make a story."
+---
+<div class="wrap page-head">
+  <p class="label">Free to play</p>
+  <h1>Story Studio</h1>
+  <p class="hero-lede">Drag Zavi, Momos, and their world onto the page to build your own scene. Make a moment where everyone feels welcome, then show a grown-up your story.</p>
+</div>
+
+<section class="section" style="padding-top:1rem;">
+  <div class="wrap studio">
+    <!-- Sticker tray -->
+    <div class="tray" aria-label="Stickers you can add">
+      <p class="tray-title">Stickers</p>
+      <div class="tray-items" data-tray>
+        <!-- Each sticker: data-kind drives the placeholder shape + color -->
+        <button class="chip" data-sticker data-kind="zavi"  style="--c:#5C3D2E;">Zavi</button>
+        <button class="chip" data-sticker data-kind="momos" style="--c:#C8963E;">Momos</button>
+        <button class="chip" data-sticker data-kind="friend" style="--c:#7A9E7E;">Friend</button>
+        <button class="chip" data-sticker data-kind="tree"  style="--c:#7A9E7E;">Tree</button>
+        <button class="chip" data-sticker data-kind="sun"   style="--c:#C8963E;">Sun</button>
+        <button class="chip" data-sticker data-kind="cloud" style="--c:#C7D3DE;">Cloud</button>
+        <button class="chip" data-sticker data-kind="ball"  style="--c:#C36B54;">Ball</button>
+        <button class="chip" data-sticker data-kind="bubble" style="--c:#F3E9D8;">Say hi!</button>
+      </div>
+      <p class="tray-hint">Tap a sticker to drop it on the page, then drag it where you like.</p>
+    </div>
+
+    <!-- Canvas -->
+    <div class="stage-wrap">
+      <div class="stage" data-stage aria-label="Your scene">
+        <span class="stage-empty" data-empty>Tap a sticker to begin your story…</span>
+      </div>
+      <div class="stage-tools">
+        <button class="btn btn--ghost" data-undo type="button">Undo</button>
+        <button class="btn btn--ghost" data-clear type="button">Start over</button>
+        <button class="btn" data-save type="button">Save my picture</button>
+      </div>
+      <p class="stage-note">Saving makes an image you can keep or print. Nothing leaves your device.</p>
+    </div>
+  </div>
+
+  <!-- Soft marketing tie-in -->
+  <div class="wrap studio-cta">
+    <p>Love these characters? Meet them in <a href="/series/adventures-of-zavi/">the books</a>.</p>
+  </div>
+</section>
+
+<style>
+/* ---- Story Studio (scoped to this page) ---- */
+.studio { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start; }
+.tray {
+  background: var(--paper-2); border: 2px solid var(--line); border-radius: 18px; padding: 1.1rem;
+  position: sticky; top: 96px;
+}
+.tray-title { font-family: var(--display); font-weight: 900; font-size: 1.2rem; margin: 0 0 0.8rem; }
+.tray-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.chip {
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  min-height: 64px; border-radius: 14px; cursor: grab;
+  border: 3px solid color-mix(in srgb, var(--c) 70%, #000 4%);
+  background: color-mix(in srgb, var(--c) 22%, #fff);
+  color: #3a2a1c; font-family: var(--label); font-weight: 600; font-size: 0.9rem;
+  transition: transform .1s ease;
+}
+.chip::before {
+  content: ""; width: 22px; height: 22px; border-radius: 6px;
+  background: var(--c); border: 2px solid color-mix(in srgb, var(--c) 60%, #000 10%);
+}
+.chip:hover { transform: translateY(-2px); }
+.chip:active { transform: scale(.96); }
+.tray-hint { font-size: 0.82rem; color: var(--ink-soft); margin: 0.9rem 0 0; }
+
+.stage-wrap { min-width: 0; }
+.stage {
+  position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: 22px; border: 6px solid var(--brown);
+  background:
+    radial-gradient(120% 80% at 50% 120%, color-mix(in srgb, var(--green) 26%, transparent), transparent 60%),
+    linear-gradient(180deg, #eaf3fb 0%, #fbf6ec 62%);
+  box-shadow: 0 14px 30px var(--shadow); touch-action: none;
+}
+.stage-empty {
+  position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 2rem;
+  font-family: var(--display); font-weight: 600; font-size: 1.3rem; color: var(--ink-soft); pointer-events: none;
+}
+.placed {
+  position: absolute; transform: translate(-50%, -50%); cursor: grab; touch-action: none;
+  display: grid; place-items: center; user-select: none;
+}
+.placed.dragging { cursor: grabbing; z-index: 10; }
+/* placeholder shapes — swap these blocks for <img> when real art exists */
+.shape { display: grid; place-items: center; filter: drop-shadow(0 3px 4px rgba(0,0,0,.18)); }
+.shape svg { display: block; }
+.placed .tag {
+  position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+  font-family: var(--label); font-size: 0.62rem; letter-spacing: .04em; text-transform: uppercase;
+  background: #fff8; padding: 1px 6px; border-radius: 999px; color: #3a2a1c; white-space: nowrap;
+}
+.placed .del {
+  position: absolute; top: -10px; right: -10px; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid #fff; background: var(--clay); color: #fff; font-weight: 700; cursor: pointer;
+  display: none; align-items: center; justify-content: center; font-size: 14px; line-height: 1;
+}
+.placed:hover .del, .placed.selected .del { display: flex; }
+
+.stage-tools { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+.stage-note { font-size: 0.8rem; color: var(--ink-soft); margin: 0.6rem 0 0; }
+.studio-cta { margin-top: 1.6rem; }
+.studio-cta p {
+  background: var(--paper-2); border: 2px dashed var(--line); border-radius: 14px;
+  padding: 0.9rem 1.2rem; font-family: var(--display); font-size: 1.05rem; margin: 0;
+}
+
+@media (max-width: 760px) {
+  .studio { grid-template-columns: 1fr; }
+  .tray { position: static; }
+  .tray-items { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+
+<script>
+(function () {
+  const stage = document.querySelector('[data-stage]');
+  const tray = document.querySelector('[data-tray]');
+  if (!stage || !tray) return;
+  const empty = stage.querySelector('[data-empty]');
+  const placed = [];        // stack for undo
+  let selected = null;
+
+  // --- placeholder shapes (SVG). Replace a case with an <img> to use real art. ---
+  function shapeFor(kind) {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 100 100');
+    s.setAttribute('width', '84'); s.setAttribute('height', '84');
+    const map = {
+      zavi:  '<circle cx="50" cy="34" r="18" fill="#5C3D2E"/><rect x="34" y="50" width="32" height="40" rx="14" fill="#5C3D2E"/><circle cx="43" cy="32" r="3" fill="#fff"/><circle cx="57" cy="32" r="3" fill="#fff"/>',
+      momos: '<ellipse cx="50" cy="58" rx="30" ry="26" fill="#F3E9D8" stroke="#C8963E" stroke-width="4"/><circle cx="40" cy="52" r="3" fill="#5C3D2E"/><circle cx="60" cy="52" r="3" fill="#5C3D2E"/><ellipse cx="50" cy="62" rx="5" ry="3" fill="#C36B54"/>',
+      friend:'<circle cx="50" cy="34" r="18" fill="#7A9E7E"/><rect x="34" y="50" width="32" height="40" rx="14" fill="#7A9E7E"/><circle cx="43" cy="32" r="3" fill="#fff"/><circle cx="57" cy="32" r="3" fill="#fff"/>',
+      tree:  '<rect x="44" y="55" width="12" height="35" rx="4" fill="#8a5a3c"/><circle cx="50" cy="40" r="26" fill="#7A9E7E"/>',
+      sun:   '<circle cx="50" cy="50" r="24" fill="#C8963E"/><g stroke="#C8963E" stroke-width="6" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="20"/><line x1="50" y1="80" x2="50" y2="92"/><line x1="8" y1="50" x2="20" y2="50"/><line x1="80" y1="50" x2="92" y2="50"/></g>',
+      cloud: '<ellipse cx="40" cy="55" rx="22" ry="16" fill="#fff"/><ellipse cx="62" cy="52" rx="20" ry="16" fill="#fff"/><ellipse cx="52" cy="60" rx="26" ry="14" fill="#fff"/>',
+      ball:  '<circle cx="50" cy="50" r="26" fill="#C36B54"/><path d="M24 50h52M50 24v52" stroke="#fff" stroke-width="4"/>',
+      bubble:'<path d="M20 20h60a10 10 0 0 1 10 10v28a10 10 0 0 1-10 10H46l-16 14v-14h-10a10 10 0 0 1-10-10V30a10 10 0 0 1 10-10z" fill="#fff" stroke="#C8963E" stroke-width="3"/><text x="50" y="52" font-size="20" text-anchor="middle" fill="#5C3D2E" font-family="sans-serif">Hi!</text>'
+    };
+    s.innerHTML = map[kind] || '<circle cx="50" cy="50" r="24" fill="#999"/>';
+    return s;
+  }
+
+  function addSticker(kind, x, y) {
+    if (empty) empty.style.display = 'none';
+    const el = document.createElement('div');
+    el.className = 'placed';
+    el.dataset.kind = kind;
+    el.style.left = (x || 50) + '%';
+    el.style.top = (y || 50) + '%';
+    const shape = document.createElement('div');
+    shape.className = 'shape';
+    shape.appendChild(shapeFor(kind));
+    el.appendChild(shape);
+    const del = document.createElement('button');
+    del.className = 'del'; del.type = 'button'; del.textContent = '×';
+    del.setAttribute('aria-label', 'Remove sticker');
+    del.addEventListener('click', (e) => { e.stopPropagation(); el.remove(); const i = placed.indexOf(el); if (i>-1) placed.splice(i,1); checkEmpty(); });
+    el.appendChild(del);
+    makeDraggable(el);
+    stage.appendChild(el);
+    placed.push(el);
+  }
+
+  function checkEmpty() { if (empty) empty.style.display = placed.length ? 'none' : 'grid'; }
+
+  // Tap a tray chip -> drop near center with slight random offset
+  tray.querySelectorAll('[data-sticker]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const jitter = () => 42 + Math.random() * 16;
+      addSticker(chip.dataset.kind, jitter(), jitter());
+    });
+  });
+
+  // Drag placed stickers around the stage (pointer events = mouse + touch)
+  function makeDraggable(el) {
+    let dragging = false, offX = 0, offY = 0;
+    el.addEventListener('pointerdown', (e) => {
+      if (e.target.classList.contains('del')) return;
+      dragging = true; el.classList.add('dragging');
+      el.setPointerCapture(e.pointerId);
+      const r = stage.getBoundingClientRect();
+      const cx = r.left + (parseFloat(el.style.left) / 100) * r.width;
+      const cy = r.top + (parseFloat(el.style.top) / 100) * r.height;
+      offX = e.clientX - cx; offY = e.clientY - cy;
+      selectOnly(el);
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const r = stage.getBoundingClientRect();
+      let nx = ((e.clientX - offX - r.left) / r.width) * 100;
+      let ny = ((e.clientY - offY - r.top) / r.height) * 100;
+      nx = Math.max(4, Math.min(96, nx));
+      ny = Math.max(6, Math.min(94, ny));
+      el.style.left = nx + '%'; el.style.top = ny + '%';
+    });
+    function end(e){ if(!dragging) return; dragging=false; el.classList.remove('dragging'); try{el.releasePointerCapture(e.pointerId);}catch(_){} }
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+  }
+  function selectOnly(el){ placed.forEach(p=>p.classList.remove('selected')); el.classList.add('selected'); selected = el; }
+
+  // Tools
+  document.querySelector('[data-undo]').addEventListener('click', () => {
+    const last = placed.pop(); if (last) last.remove(); checkEmpty();
+  });
+  document.querySelector('[data-clear]').addEventListener('click', () => {
+    placed.splice(0).forEach(p => p.remove()); checkEmpty();
+  });
+
+  // Save: rasterize the stage to a PNG via canvas (foreignObject SVG trick)
+  document.querySelector('[data-save]').addEventListener('click', async () => {
+    placed.forEach(p=>p.classList.remove('selected'));
+    const r = stage.getBoundingClientRect();
+    const w = Math.round(r.width), h = Math.round(r.height);
+    // Build an SVG snapshot of the stage's HTML
+    const clone = stage.cloneNode(true);
+    clone.querySelectorAll('.del').forEach(d => d.remove());
+    const html = clone.outerHTML;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'
+      + '<foreignObject width="100%" height="100%">'
+      + '<div xmlns="http://www.w3.org/1999/xhtml">' + html + '</div>'
+      + '</foreignObject></svg>';
+    const blob = new Blob([svg], {type:'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.download = 'my-zavi-story.png';
+      a.href = c.toDataURL('image/png');
+      a.click();
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); alert('Could not save the picture in this browser — try a screenshot instead.'); };
+    img.src = url;
+  });
+
+  stage.addEventListener('pointerdown', (e) => { if (e.target === stage) { placed.forEach(p=>p.classList.remove('selected')); } });
+})();
+</script>
