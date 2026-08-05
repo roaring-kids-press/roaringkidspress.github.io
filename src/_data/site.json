@@ -58,6 +58,6 @@
     { "name": "X", "url": "#", "icon": "x" },
     { "name": "Pinterest", "url": "#", "icon": "pinterest" },
     { "name": "YouTube", "url": "#", "icon": "youtube" },
-    { "name": "Email newsletter", "url": "/newsletter/", "icon": "mail" }
+    { "name": "LinkedIn", "url": "#", "icon": "linkedin" }
   ]
 }

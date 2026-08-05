@@ -1,5 +1,6 @@
 <header class="site-header">
-  <div class="wrap header-inner">
+  <!-- Top row: brand + search -->
+  <div class="wrap header-top">
     <a class="brand" href="/">
       <span class="brand-mark" aria-hidden="true">
         <span class="spine"></span><span class="spine"></span><span class="spine"></span>
@@ -10,10 +11,22 @@
       </span>
     </a>
 
+    <div class="nav-search">
+      <label class="visually-hidden" for="site-search">Search books</label>
+      <input id="site-search" type="search" placeholder="Title / Series / ISBN / Author" autocomplete="off" />
+      <button type="button" class="search-go" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10 4a6 6 0 1 1-4.2 10.2l-3.3 3.3-1.4-1.4 3.3-3.3A6 6 0 0 1 10 4m0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8"/></svg>
+      </button>
+      <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+    </div>
+
     <button class="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
+  </div>
 
+  <!-- Bottom row: nav -->
+  <div class="wrap header-bottom">
     <nav id="site-nav" class="site-nav" aria-label="Primary">
       <ul class="nav-list">
         {% for item in site.nav %}
@@ -32,15 +45,6 @@
         </li>
         {% endfor %}
       </ul>
-
-      <div class="nav-search">
-        <label class="visually-hidden" for="site-search">Search books</label>
-        <input id="site-search" type="search" placeholder="Title / Series / ISBN / Author" autocomplete="off" />
-        <button type="button" class="search-go" aria-label="Search">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10 4a6 6 0 1 1-4.2 10.2l-3.3 3.3-1.4-1.4 3.3-3.3A6 6 0 0 1 10 4m0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8"/></svg>
-        </button>
-        <ul id="search-results" class="search-results" role="listbox" hidden></ul>
-      </div>
     </nav>
   </div>
 </header>

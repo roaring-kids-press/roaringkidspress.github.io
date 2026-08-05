@@ -39,7 +39,80 @@
       });
     });
 
-    // Client-side book search
+    // Latest-books carousel: auto-scroll + drag/swipe + arrows, seamless loop
+    (function () {
+      const root = document.querySelector('[data-carousel]');
+      if (!root) return;
+      const viewport = root.querySelector('[data-carousel-viewport]');
+      const track = root.querySelector('[data-carousel-track]');
+      const prev = root.querySelector('.carousel-prev');
+      const next = root.querySelector('.carousel-next');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Half the track = one full set of originals (the rest are clones).
+      function halfWidth() { return track.scrollWidth / 2; }
+
+      // Keep scroll position within [0, half) for a seamless loop.
+      function normalize() {
+        const h = halfWidth();
+        if (h <= 0) return;
+        if (viewport.scrollLeft >= h) viewport.scrollLeft -= h;
+        else if (viewport.scrollLeft < 0) viewport.scrollLeft += h;
+      }
+
+      let auto = !reduce;
+      let paused = false;
+      const speed = 0.5; // px per frame (~30px/s at 60fps)
+
+      function tick() {
+        if (auto && !paused) {
+          viewport.scrollLeft += speed;
+          normalize();
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      // Pause on hover / focus within
+      root.addEventListener('mouseenter', () => { paused = true; });
+      root.addEventListener('mouseleave', () => { paused = false; });
+      root.addEventListener('focusin', () => { paused = true; });
+      root.addEventListener('focusout', () => { paused = false; });
+
+      // Arrow buttons — nudge by roughly one card width
+      function card() { const c = track.querySelector('.carousel-card'); return c ? c.offsetWidth + 26 : 220; }
+      prev.addEventListener('click', () => { viewport.scrollBy({ left: -card() * 2, behavior: 'smooth' }); });
+      next.addEventListener('click', () => { viewport.scrollBy({ left: card() * 2, behavior: 'smooth' }); });
+      // normalize shortly after a smooth arrow scroll so the loop stays seamless
+      [prev, next].forEach(b => b.addEventListener('click', () => setTimeout(normalize, 400)));
+
+      // Drag / swipe
+      let down = false, startX = 0, startScroll = 0, moved = false;
+      viewport.addEventListener('pointerdown', (e) => {
+        down = true; moved = false; paused = true;
+        startX = e.clientX; startScroll = viewport.scrollLeft;
+        viewport.setPointerCapture(e.pointerId);
+        viewport.classList.add('is-dragging');
+      });
+      viewport.addEventListener('pointermove', (e) => {
+        if (!down) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 4) moved = true;
+        viewport.scrollLeft = startScroll - dx;
+        normalize();
+      });
+      function endDrag(e) {
+        if (!down) return;
+        down = false;
+        viewport.classList.remove('is-dragging');
+        try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
+        setTimeout(() => { paused = false; }, 600);
+      }
+      viewport.addEventListener('pointerup', endDrag);
+      viewport.addEventListener('pointercancel', endDrag);
+      // Prevent a drag from also triggering a card-link click
+      track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); } }, true);
+    })();
     (function () {
       const input = document.getElementById('site-search');
       const results = document.getElementById('search-results');

@@ -30,23 +30,34 @@ title: false
       <p class="label">On the shelf</p>
       <h2>Latest books</h2>
     </div>
-  </div>
-  {% set marquee = collections.books | reverse %}
-  <div class="marquee" aria-label="Latest books, scrolling">
-    <div class="marquee-track">
-      {% for pass in [1, 2] %}
-      {% for book in marquee %}
-      {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
-      <a class="book-card marquee-card" href="{{ book.url }}"{% if pass == 2 %} aria-hidden="true" tabindex="-1"{% endif %}>
-        <div class="book-cover" style="--accent: {{ bs.accent }};">
-          <span class="ph-title">{{ book.data.title }}</span>
-          <span class="ph-tag">{{ bs.name }}</span>
+
+    <div class="carousel" data-carousel>
+      <button class="carousel-arrow carousel-prev" aria-label="Scroll left" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15 5l-7 7 7 7 1.4-1.4L10.8 12l5.6-5.6z"/></svg>
+      </button>
+
+      <div class="carousel-viewport" data-carousel-viewport>
+        <div class="carousel-track" data-carousel-track>
+          {% set marquee = collections.books | reverse %}
+          {% for pass in [1, 2] %}
+          {% for book in marquee %}
+          {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
+          <a class="book-card carousel-card" href="{{ book.url }}"{% if pass == 2 %} aria-hidden="true" tabindex="-1" data-clone="true"{% endif %}>
+            <div class="book-cover" style="--accent: {{ bs.accent }};">
+              <span class="ph-title">{{ book.data.title }}</span>
+              <span class="ph-tag">{{ bs.name }}</span>
+            </div>
+            <h3>{{ book.data.title }}</h3>
+            <span class="book-meta">Ages {{ book.data.ages }}</span>
+          </a>
+          {% endfor %}
+          {% endfor %}
         </div>
-        <h3>{{ book.data.title }}</h3>
-        <span class="book-meta">Ages {{ book.data.ages }}</span>
-      </a>
-      {% endfor %}
-      {% endfor %}
+      </div>
+
+      <button class="carousel-arrow carousel-next" aria-label="Scroll right" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 5l7 7-7 7-1.4-1.4L13.2 12 7.6 6.4z"/></svg>
+      </button>
     </div>
   </div>
 </section>
