@@ -88,6 +88,7 @@
       let dragging = false;
       const pxPerSec = 26;   // constant speed regardless of display refresh rate
       let lastTs = null;
+      let carry = 0;         // accumulates sub-pixel movement between frames
 
       function seatMiddle() { if (setWidth > 0) viewport.scrollLeft = setWidth * 0.5; }
 
@@ -106,8 +107,16 @@
         const dt = Math.min((ts - lastTs) / 1000, 0.1); // seconds, clamp long gaps
         lastTs = ts;
         if (!reduce && !paused && !dragging) {
-          viewport.scrollLeft += pxPerSec * dt;
-          wrap();
+          // Accumulate fractional distance; only apply whole pixels, because
+          // browsers floor sub-pixel scrollLeft increments (which stalled the
+          // carousel on high-refresh-rate desktop displays).
+          carry += pxPerSec * dt;
+          const whole = Math.floor(carry);
+          if (whole >= 1) {
+            viewport.scrollLeft += whole;
+            carry -= whole;
+            wrap();
+          }
         }
         requestAnimationFrame(tick);
       }
