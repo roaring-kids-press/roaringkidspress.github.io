@@ -27,6 +27,14 @@
       ]
     },
     {
+      "text": "Play",
+      "url": "/play/story-studio/",
+      "children": [
+        { "text": "Story Studio", "url": "/play/story-studio/" },
+        { "text": "Printables", "url": "/play/printables/" }
+      ]
+    },
+    {
       "text": "About",
       "url": "/about/",
       "children": [
@@ -58,6 +66,7 @@
     { "name": "X", "url": "#", "icon": "x" },
     { "name": "Pinterest", "url": "#", "icon": "pinterest" },
     { "name": "LinkedIn", "url": "#", "icon": "linkedin" },
-    { "name": "YouTube", "url": "#", "icon": "youtube" }
+    { "name": "YouTube", "url": "#", "icon": "youtube" },
+    { "name": "TikTok", "url": "#", "icon": "tiktok" }
   ]
 }

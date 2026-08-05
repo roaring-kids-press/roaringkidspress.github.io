@@ -501,9 +501,10 @@ img { max-width: 100%; display: block; }
 }
 .social-link {
   display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
-  color: #fff; transition: transform .15s ease, filter .15s ease;
+  color: #fff !important;   /* override footer's gold link color so glyphs stay crisp white */
+  transition: transform .15s ease, filter .15s ease;
 }
-.social-link svg { width: 24px; height: 24px; }   /* another ~10% larger */
+.social-link svg { width: 24px; height: 24px; fill: #fff; }
 .social-link:hover { transform: translateY(-2px); filter: brightness(1.08); }
 /* Brand colors applied by default */
 .social-facebook  { background: #3b5998; }
@@ -512,6 +513,7 @@ img { max-width: 100%; display: block; }
 .social-pinterest { background: #bd081c; }
 .social-youtube   { background: #c4302b; }
 .social-linkedin  { background: #0a66c2; }
+.social-tiktok    { background: #010101; }
 
 /* Large signup (newsletter page) */
 .signup--lg { max-width: 480px; }
