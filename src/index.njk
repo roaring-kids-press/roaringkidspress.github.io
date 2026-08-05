@@ -39,10 +39,9 @@ title: false
       <div class="carousel-viewport" data-carousel-viewport>
         <div class="carousel-track" data-carousel-track>
           {% set marquee = collections.books | reverse %}
-          {% for pass in [1, 2] %}
           {% for book in marquee %}
           {% set bs = seriesList | selectattr("slug", "equalto", book.data.series) | first %}
-          <a class="book-card carousel-card" href="{{ book.url }}"{% if pass == 2 %} aria-hidden="true" tabindex="-1" data-clone="true"{% endif %}>
+          <a class="book-card carousel-card" href="{{ book.url }}" draggable="false">
             <div class="book-cover" style="--accent: {{ bs.accent }};">
               <span class="ph-title">{{ book.data.title }}</span>
               <span class="ph-tag">{{ bs.name }}</span>
@@ -50,7 +49,6 @@ title: false
             <h3>{{ book.data.title }}</h3>
             <span class="book-meta">Ages {{ book.data.ages }}</span>
           </a>
-          {% endfor %}
           {% endfor %}
         </div>
       </div>

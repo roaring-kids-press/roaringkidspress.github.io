@@ -39,7 +39,9 @@
       });
     });
 
-    // Latest-books carousel: auto-scroll + drag/swipe + arrows, seamless loop
+    // Latest-books carousel: auto-scroll + drag/swipe + arrows, seamless loop.
+    // Works for any number of books by cloning the original set until the
+    // track is wide enough to scroll and loop smoothly.
     (function () {
       const root = document.querySelector('[data-carousel]');
       if (!root) return;
@@ -49,69 +51,111 @@
       const next = root.querySelector('.carousel-next');
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Half the track = one full set of originals (the rest are clones).
-      function halfWidth() { return track.scrollWidth / 2; }
+      const originals = Array.from(track.children);
+      let setWidth = 0;   // width of ONE original set (the loop unit)
 
-      // Keep scroll position within [0, half) for a seamless loop.
-      function normalize() {
-        const h = halfWidth();
-        if (h <= 0) return;
-        if (viewport.scrollLeft >= h) viewport.scrollLeft -= h;
-        else if (viewport.scrollLeft < 0) viewport.scrollLeft += h;
+      // Measure one original set, then clone whole sets until the track is at
+      // least ~3× the viewport so there's always room to scroll both ways.
+      function build() {
+        // remove any previous clones
+        Array.from(track.querySelectorAll('[data-clone="true"]')).forEach(n => n.remove());
+        // measure one set
+        setWidth = originals.reduce((sum, el) => sum + el.getBoundingClientRect().width, 0);
+        const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || '0') || 0;
+        setWidth += gap * originals.length; // include the gap after each card
+        const target = Math.max(viewport.clientWidth * 3, setWidth * 2);
+        let width = setWidth;
+        // append clones set-by-set until wide enough
+        while (width < target) {
+          originals.forEach(el => {
+            const c = el.cloneNode(true);
+            c.setAttribute('data-clone', 'true');
+            c.setAttribute('aria-hidden', 'true');
+            c.setAttribute('tabindex', '-1');
+            track.appendChild(c);
+          });
+          width += setWidth;
+        }
       }
 
-      let auto = !reduce;
+      function wrap() {
+        if (setWidth <= 0) return;
+        if (viewport.scrollLeft >= setWidth) viewport.scrollLeft -= setWidth;
+        else if (viewport.scrollLeft < 0) viewport.scrollLeft += setWidth;
+      }
+
       let paused = false;
-      const speed = 0.5; // px per frame (~30px/s at 60fps)
+      let dragging = false;
+      const speed = 0.5;
+
+      function seatMiddle() { if (setWidth > 0) viewport.scrollLeft = setWidth * 0.5; }
+
+      function init() {
+        build();
+        seatMiddle();
+      }
+      // build after layout settles
+      requestAnimationFrame(() => requestAnimationFrame(init));
+      window.addEventListener('load', init);
+      let rz;
+      window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(init, 200); });
 
       function tick() {
-        if (auto && !paused) {
+        if (!reduce && !paused && !dragging) {
           viewport.scrollLeft += speed;
-          normalize();
+          wrap();
         }
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
 
-      // Pause on hover / focus within
-      root.addEventListener('mouseenter', () => { paused = true; });
-      root.addEventListener('mouseleave', () => { paused = false; });
-      root.addEventListener('focusin', () => { paused = true; });
-      root.addEventListener('focusout', () => { paused = false; });
+      function armPause(ms) {
+        paused = true;
+        clearTimeout(armPause._t);
+        armPause._t = setTimeout(() => { paused = false; }, ms);
+      }
+      function cardStep() {
+        const c = track.querySelector('.carousel-card');
+        return (c ? c.offsetWidth + 26 : 220) * 2;
+      }
+      prev.addEventListener('click', () => { armPause(700); viewport.scrollBy({ left: -cardStep(), behavior: 'smooth' }); setTimeout(wrap, 450); });
+      next.addEventListener('click', () => { armPause(700); viewport.scrollBy({ left:  cardStep(), behavior: 'smooth' }); setTimeout(wrap, 450); });
 
-      // Arrow buttons — nudge by roughly one card width
-      function card() { const c = track.querySelector('.carousel-card'); return c ? c.offsetWidth + 26 : 220; }
-      prev.addEventListener('click', () => { viewport.scrollBy({ left: -card() * 2, behavior: 'smooth' }); });
-      next.addEventListener('click', () => { viewport.scrollBy({ left: card() * 2, behavior: 'smooth' }); });
-      // normalize shortly after a smooth arrow scroll so the loop stays seamless
-      [prev, next].forEach(b => b.addEventListener('click', () => setTimeout(normalize, 400)));
-
-      // Drag / swipe
-      let down = false, startX = 0, startScroll = 0, moved = false;
+      // Drag / swipe (mouse + touch)
+      let startX = 0, startScroll = 0, moved = false;
       viewport.addEventListener('pointerdown', (e) => {
-        down = true; moved = false; paused = true;
+        dragging = true; moved = false;
         startX = e.clientX; startScroll = viewport.scrollLeft;
         viewport.setPointerCapture(e.pointerId);
         viewport.classList.add('is-dragging');
       });
       viewport.addEventListener('pointermove', (e) => {
-        if (!down) return;
+        if (!dragging) return;
         const dx = e.clientX - startX;
         if (Math.abs(dx) > 4) moved = true;
-        viewport.scrollLeft = startScroll - dx;
-        normalize();
+        let target = startScroll - dx;
+        // Wrap the target into the loop range and shift startScroll by the
+        // same amount so the gesture stays perfectly 1:1 in both directions.
+        if (setWidth > 0) {
+          while (target >= setWidth) { target -= setWidth; startScroll -= setWidth; }
+          while (target < 0)         { target += setWidth; startScroll += setWidth; }
+        }
+        viewport.scrollLeft = target;
       });
       function endDrag(e) {
-        if (!down) return;
-        down = false;
+        if (!dragging) return;
+        dragging = false;
         viewport.classList.remove('is-dragging');
         try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
-        setTimeout(() => { paused = false; }, 600);
+        wrap();
+        armPause(500);
       }
       viewport.addEventListener('pointerup', endDrag);
       viewport.addEventListener('pointercancel', endDrag);
-      // Prevent a drag from also triggering a card-link click
-      track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); } }, true);
+      viewport.addEventListener('pointerleave', (e) => { if (dragging) endDrag(e); });
+
+      track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
+      track.addEventListener('dragstart', (e) => e.preventDefault());
     })();
     (function () {
       const input = document.getElementById('site-search');

@@ -105,11 +105,11 @@ img { max-width: 100%; display: block; }
    reads as one unit. */
 .header-top {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 1.5rem; padding-top: 0.9rem; padding-bottom: 0.35rem;
+  gap: 1.5rem; padding-top: 0.9rem; padding-bottom: 0.55rem;
 }
 .header-bottom {
   display: flex; align-items: stretch;
-  padding-bottom: 0; min-height: 40px;
+  padding-top: 0.2rem; padding-bottom: 0; min-height: 40px;
 }
 
 /* Brand — enlarged per request */
@@ -120,8 +120,8 @@ img { max-width: 100%; display: block; }
 .brand-mark .spine:nth-child(2) { height: 42px; background: var(--gold); }
 .brand-mark .spine:nth-child(3) { height: 36px; background: var(--clay); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.08; }
-.brand-name { font-family: var(--display); font-weight: 900; font-size: 1.7rem; letter-spacing: -0.015em; }
-.brand-tag { font-size: 0.9rem; color: var(--ink-soft); }
+.brand-name { font-family: var(--display); font-weight: 900; font-size: 1.87rem; letter-spacing: -0.015em; }
+.brand-tag { font-size: 0.99rem; color: var(--ink-soft); }
 
 /* Nav */
 .site-nav { display: flex; align-items: stretch; gap: 1.5rem; }
@@ -249,7 +249,6 @@ img { max-width: 100%; display: block; }
     display: none;
   }
   .nav-item.open > .submenu { display: block; }
-  .brand-tag { display: none; }
 }
 
 /* ============================================================
@@ -404,6 +403,7 @@ img { max-width: 100%; display: block; }
   scrollbar-width: none;                 /* Firefox */
   -ms-overflow-style: none;              /* IE/Edge */
   cursor: grab;
+  touch-action: pan-y;                   /* let us handle horizontal drag; page still scrolls vertically */
   /* Fades aligned to the container edges (same margins as the section text) */
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
           mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
@@ -448,7 +448,7 @@ img { max-width: 100%; display: block; }
   display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
   color: #fff; transition: transform .15s ease, filter .15s ease;
 }
-.social-link svg { width: 22px; height: 22px; }   /* was 20px (~10% bigger) */
+.social-link svg { width: 24px; height: 24px; }   /* another ~10% larger */
 .social-link:hover { transform: translateY(-2px); filter: brightness(1.08); }
 /* Brand colors applied by default */
 .social-facebook  { background: #3b5998; }

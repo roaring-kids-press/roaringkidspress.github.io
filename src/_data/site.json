@@ -57,7 +57,7 @@
     { "name": "Instagram", "url": "#", "icon": "instagram" },
     { "name": "X", "url": "#", "icon": "x" },
     { "name": "Pinterest", "url": "#", "icon": "pinterest" },
-    { "name": "YouTube", "url": "#", "icon": "youtube" },
-    { "name": "LinkedIn", "url": "#", "icon": "linkedin" }
+    { "name": "LinkedIn", "url": "#", "icon": "linkedin" },
+    { "name": "YouTube", "url": "#", "icon": "youtube" }
   ]
 }
