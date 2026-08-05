@@ -39,7 +39,60 @@
       });
     });
 
-    // Latest-books carousel: auto-scroll + drag/swipe + arrows, seamless loop.
+    // Mission slider: auto-advance with per-slide timer bar + dot controls
+    (function () {
+      const root = document.querySelector('[data-slider]');
+      if (!root) return;
+      const slides = Array.from(root.querySelectorAll('[data-slide]'));
+      const dots = Array.from(root.querySelectorAll('[data-dot]'));
+      if (!slides.length) return;
+      const DURATION = 5000;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      root.style.setProperty('--slide-ms', DURATION + 'ms');
+
+      let current = 0;
+      let timer = null;
+
+      function show(i) {
+        current = (i + slides.length) % slides.length;
+        slides.forEach((s, n) => {
+          const active = n === current;
+          s.classList.toggle('is-active', active);
+          s.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        dots.forEach((d, n) => {
+          const active = n === current;
+          d.classList.toggle('is-active', active);
+          d.setAttribute('aria-selected', active ? 'true' : 'false');
+          // reset fill on all
+          d.classList.remove('is-timing');
+          d.querySelector('.dot-fill').style.width = '';
+        });
+        // kick the active dot's timer bar on the next frame so the transition runs
+        if (!reduce) {
+          const fill = dots[current].querySelector('.dot-fill');
+          void fill.offsetWidth; // reflow
+          dots[current].classList.add('is-timing');
+        }
+      }
+
+      function start() {
+        if (reduce) return;
+        stop();
+        timer = setTimeout(() => show(current + 1), DURATION);
+      }
+      function stop() { if (timer) { clearTimeout(timer); timer = null; } }
+      function go(i) { show(i); start(); }
+
+      dots.forEach((d, n) => d.addEventListener('click', () => go(n)));
+
+      // Pause on hover / focus
+      root.addEventListener('mouseenter', () => { stop(); dots[current].classList.remove('is-timing'); const f = dots[current].querySelector('.dot-fill'); f.style.width = getComputedStyle(f).width; });
+      root.addEventListener('mouseleave', () => { go(current); });
+
+      show(0);
+      start();
+    })();
     // Works for any number of books by cloning the original set until the
     // track is wide enough to scroll and loop smoothly.
     (function () {

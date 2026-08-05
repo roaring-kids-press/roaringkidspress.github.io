@@ -13,12 +13,31 @@ title: false
         <a class="btn btn--ghost" href="/about/">Our story</a>
       </div>
     </div>
-    <div class="hero-art" aria-hidden="true">
-      <div class="book-stack">
-        <span class="vol">Learn</span>
-        <span class="vol">Grow</span>
-        <span class="vol">Explore</span>
-        <span class="vol">Connect</span>
+    <div class="hero-art">
+      <div class="mission-slider" data-slider>
+        <div class="mission-head">
+          <p class="label">Our Mission</p>
+          <h2 class="mission-title">Nurturing Young Minds</h2>
+          <p class="mission-sub">Every story we publish is built on four core pillars designed to support children as they navigate their world.</p>
+        </div>
+
+        <div class="slides" data-slides>
+          {% for pillar in pillars %}
+          <article class="slide{% if loop.first %} is-active{% endif %}" data-slide style="--accent: {{ pillar.accent }};" aria-hidden="{{ 'false' if loop.first else 'true' }}">
+            <span class="slide-index">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span>
+            <h3 class="slide-name">{{ pillar.name }}</h3>
+            <p class="slide-text">{{ pillar.text }}</p>
+          </article>
+          {% endfor %}
+        </div>
+
+        <div class="slider-dots" role="tablist" aria-label="Mission pillars">
+          {% for pillar in pillars %}
+          <button class="dot{% if loop.first %} is-active{% endif %}" data-dot data-index="{{ loop.index0 }}" role="tab" aria-label="{{ pillar.name }}" aria-selected="{{ 'true' if loop.first else 'false' }}">
+            <span class="dot-fill"></span>
+          </button>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>

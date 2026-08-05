@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Learn",
+    "text": "We spark curiosity through engaging facts, problem-solving, and critical thinking.",
+    "accent": "#5C3D2E"
+  },
+  {
+    "name": "Grow",
+    "text": "We support emotional resilience, mindfulness, and the development of positive life skills.",
+    "accent": "#C8963E"
+  },
+  {
+    "name": "Explore",
+    "text": "We invite kids to discover new cultures, nature, and the vast world around them.",
+    "accent": "#C36B54"
+  },
+  {
+    "name": "Connect",
+    "text": "We deepen bonds between readers, families, and communities through shared empathy and conversation.",
+    "accent": "#7A9E7E"
+  }
+]
