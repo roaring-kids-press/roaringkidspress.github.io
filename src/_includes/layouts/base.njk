@@ -86,7 +86,8 @@
 
       let paused = false;
       let dragging = false;
-      const speed = 0.5;
+      const pxPerSec = 26;   // constant speed regardless of display refresh rate
+      let lastTs = null;
 
       function seatMiddle() { if (setWidth > 0) viewport.scrollLeft = setWidth * 0.5; }
 
@@ -100,9 +101,12 @@
       let rz;
       window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(init, 200); });
 
-      function tick() {
+      function tick(ts) {
+        if (lastTs == null) lastTs = ts;
+        const dt = Math.min((ts - lastTs) / 1000, 0.1); // seconds, clamp long gaps
+        lastTs = ts;
         if (!reduce && !paused && !dragging) {
-          viewport.scrollLeft += speed;
+          viewport.scrollLeft += pxPerSec * dt;
           wrap();
         }
         requestAnimationFrame(tick);
@@ -118,8 +122,27 @@
         const c = track.querySelector('.carousel-card');
         return (c ? c.offsetWidth + 26 : 220) * 2;
       }
-      prev.addEventListener('click', () => { armPause(700); viewport.scrollBy({ left: -cardStep(), behavior: 'smooth' }); setTimeout(wrap, 450); });
-      next.addEventListener('click', () => { armPause(700); viewport.scrollBy({ left:  cardStep(), behavior: 'smooth' }); setTimeout(wrap, 450); });
+      prev.addEventListener('click', () => {
+        armPause(700);
+        const step = cardStep();
+        // If we're near the start, jump forward one whole set first (seamless,
+        // since content repeats) so there's room to smooth-scroll left into.
+        if (setWidth > 0 && viewport.scrollLeft < step) {
+          viewport.scrollLeft += setWidth;
+        }
+        viewport.scrollBy({ left: -step, behavior: 'smooth' });
+        setTimeout(wrap, 450);
+      });
+      next.addEventListener('click', () => {
+        armPause(700);
+        const step = cardStep();
+        // Symmetric guard for the far end.
+        if (setWidth > 0 && viewport.scrollLeft > viewport.scrollWidth - viewport.clientWidth - step) {
+          viewport.scrollLeft -= setWidth;
+        }
+        viewport.scrollBy({ left: step, behavior: 'smooth' });
+        setTimeout(wrap, 450);
+      });
 
       // Drag / swipe (mouse + touch)
       let startX = 0, startScroll = 0, moved = false;
