@@ -39,14 +39,14 @@
       });
     });
 
-    // Mission slider: auto-advance with per-slide timer bar + dot controls
+    // Mission slider: continuous cyclic auto-advance + per-slide timer bar + dots
     (function () {
       const root = document.querySelector('[data-slider]');
       if (!root) return;
       const slides = Array.from(root.querySelectorAll('[data-slide]'));
       const dots = Array.from(root.querySelectorAll('[data-dot]'));
       if (!slides.length) return;
-      const DURATION = 5000;
+      const DURATION = 3500;
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       root.style.setProperty('--slide-ms', DURATION + 'ms');
 
@@ -64,34 +64,31 @@
           const active = n === current;
           d.classList.toggle('is-active', active);
           d.setAttribute('aria-selected', active ? 'true' : 'false');
-          // reset fill on all
           d.classList.remove('is-timing');
           d.querySelector('.dot-fill').style.width = '';
         });
-        // kick the active dot's timer bar on the next frame so the transition runs
         if (!reduce) {
           const fill = dots[current].querySelector('.dot-fill');
-          void fill.offsetWidth; // reflow
+          void fill.offsetWidth; // reflow so the timer transition restarts
           dots[current].classList.add('is-timing');
         }
       }
 
-      function start() {
+      // Re-arm every cycle so it advances continuously and wraps around.
+      function schedule() {
         if (reduce) return;
-        stop();
-        timer = setTimeout(() => show(current + 1), DURATION);
+        clearTimeout(timer);
+        timer = setTimeout(() => { show(current + 1); schedule(); }, DURATION);
       }
-      function stop() { if (timer) { clearTimeout(timer); timer = null; } }
-      function go(i) { show(i); start(); }
+      function go(i) { show(i); schedule(); }
 
+      // Dots jump to a slide and the continuous cycle keeps running from there.
       dots.forEach((d, n) => d.addEventListener('click', () => go(n)));
 
-      // Pause on hover / focus
-      root.addEventListener('mouseenter', () => { stop(); dots[current].classList.remove('is-timing'); const f = dots[current].querySelector('.dot-fill'); f.style.width = getComputedStyle(f).width; });
-      root.addEventListener('mouseleave', () => { go(current); });
+      // No hover pause — the slideshow runs continuously.
 
       show(0);
-      start();
+      schedule();
     })();
     // Works for any number of books by cloning the original set until the
     // track is wide enough to scroll and loop smoothly.
