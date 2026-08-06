@@ -39,7 +39,7 @@
       "url": "/about/",
       "children": [
         { "text": "Our Story", "url": "/about/" },
-        { "text": "Authors", "url": "/authors/" }
+        { "text": "Author", "url": "/authors/" }
       ]
     },
     {
