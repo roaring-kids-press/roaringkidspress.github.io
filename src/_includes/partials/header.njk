@@ -30,15 +30,21 @@
     <nav id="site-nav" class="site-nav" aria-label="Primary">
       <ul class="nav-list">
         {% for item in site.nav %}
+        {% set isActive = (page.url == item.url) %}
+        {% if item.children %}
+          {% for child in item.children %}
+            {% if page.url == child.url %}{% set isActive = true %}{% endif %}
+          {% endfor %}
+        {% endif %}
         <li class="nav-item{% if item.children %} has-submenu{% endif %}">
-          <a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}
+          <a href="{{ item.url }}"{% if isActive %} aria-current="page"{% endif %}
              {% if item.children %}aria-haspopup="true" aria-expanded="false"{% endif %}>
             {{ item.text }}{% if item.children %}<span class="caret" aria-hidden="true">▾</span>{% endif %}
           </a>
           {% if item.children %}
           <ul class="submenu">
             {% for child in item.children %}
-            <li><a href="{{ child.url }}">{{ child.text }}</a></li>
+            <li><a href="{{ child.url }}"{% if page.url == child.url %} aria-current="page"{% endif %}>{{ child.text }}</a></li>
             {% endfor %}
           </ul>
           {% endif %}

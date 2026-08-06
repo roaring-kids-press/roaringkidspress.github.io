@@ -518,3 +518,7 @@ img { max-width: 100%; display: block; }
 /* Large signup (newsletter page) */
 .signup--lg { max-width: 480px; }
 .signup--lg input { flex: 1 1 100%; }
+
+/* Series page: accent underline beneath the title (replaces the old top border
+   that collided with the nav underline) */
+.series-title { display: inline-block; padding-bottom: 0.25rem; border-bottom: 6px solid var(--series-accent, var(--gold)); }

@@ -11,9 +11,9 @@
       "url": "/books/",
       "children": [
         { "text": "All Books", "url": "/books/" },
-        { "text": "Adventures of Zavi", "url": "/series/adventures-of-zavi/" },
-        { "text": "Grow with Zavi", "url": "/series/grow-with-zavi/" },
-        { "text": "Learn with Zavi", "url": "/series/learn-with-zavi/" }
+        { "text": "Zavi Learns to Roar", "url": "/books/zavi-learns-to-roar/" },
+        { "text": "Zavi Meets Momos", "url": "/books/zavi-meets-momos/" },
+        { "text": "Zavi's Big First Swim", "url": "/books/zavi-big-first-swim/" }
       ]
     },
     {
@@ -27,7 +27,7 @@
       ]
     },
     {
-      "text": "Play",
+      "text": "Activities",
       "url": "/play/story-studio/",
       "children": [
         { "text": "Story Studio", "url": "/play/story-studio/" },
@@ -46,8 +46,8 @@
       "text": "Retailers & Libraries",
       "url": "/retailers/",
       "children": [
-        { "text": "For Booksellers", "url": "/retailers/" },
-        { "text": "For Libraries", "url": "/retailers/" }
+        { "text": "For Booksellers", "url": "/retailers/booksellers/" },
+        { "text": "For Libraries", "url": "/retailers/libraries/" }
       ]
     },
     {
@@ -55,7 +55,6 @@
       "url": "/contact/",
       "children": [
         { "text": "Get in Touch", "url": "/contact/" },
-        { "text": "Press", "url": "/contact/" },
         { "text": "Newsletter", "url": "/newsletter/" }
       ]
     }

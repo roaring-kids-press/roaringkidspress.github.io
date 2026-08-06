@@ -1,0 +1,39 @@
+---
+layout: layouts/base.njk
+title: Authors
+permalink: /authors/index.html
+description: "Meet the authors behind Roaring Kids Press."
+---
+<div class="wrap page-head">
+  <p class="label">Meet the makers</p>
+  <h1>Authors</h1>
+</div>
+
+<section class="section" style="padding-top:1rem;">
+  <div class="wrap author-card">
+    <div class="author-portrait" aria-hidden="true">
+      <span>VZ</span>
+    </div>
+    <div class="author-bio prose">
+      <h2 style="margin-top:0;">Vinnie Zang</h2>
+      <p class="label" style="margin-bottom:0.8rem;">Author · Roaring Kids Press</p>
+      <p>Vinnie Zang is the pen name of an engineer who spends his days working to make self-driving cars safe, and his evenings writing stories for young readers.</p>
+      <p>The Zavi books began at home. Inspired by his own child's questions, worries, and small everyday acts of bravery, Vinnie started turning bedtime conversations into adventures. What grew out of those nights is a series about facing fears, trying new things, and the friends who make the world feel a little less big.</p>
+      <p>He writes under a pseudonym to keep his two worlds, careful engineering and playful storytelling, happily separate.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+.author-card { display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: start; }
+.author-portrait {
+  aspect-ratio: 1; border-radius: 20px; display: grid; place-items: center;
+  background: linear-gradient(160deg, var(--gold) 0%, var(--brown) 100%);
+  color: #fff6ea; font-family: var(--display); font-weight: 900; font-size: 3.2rem;
+  box-shadow: 0 12px 28px var(--shadow);
+}
+@media (max-width: 640px) {
+  .author-card { grid-template-columns: 1fr; }
+  .author-portrait { width: 140px; }
+}
+</style>

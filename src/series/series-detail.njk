@@ -9,9 +9,9 @@ eleventyComputed:
   title: "{{ s.name }}"
   description: "{{ s.blurb }}"
 ---
-<div class="wrap page-head" style="border-top: 6px solid {{ s.accent }};">
+<div class="wrap page-head series-head">
   <p class="label">{{ s.brand }} series · Ages {{ s.ages }}</p>
-  <h1>{{ s.name }}</h1>
+  <h1 class="series-title" style="--series-accent: {{ s.accent }};">{{ s.name }}</h1>
   <p class="hero-lede">{{ s.blurb }}</p>
 </div>
 
