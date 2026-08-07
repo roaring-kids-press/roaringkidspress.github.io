@@ -87,17 +87,13 @@ img { max-width: 100%; display: block; }
   color: var(--paper);
   text-decoration: none;
   cursor: pointer;
-  transition: transform .15s ease, background .15s ease, color .15s ease;
+  transition: box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
 }
-.btn { position: relative; }
-/* Invisible buffer so the -2px hover lift never pulls the button out from
-   under the cursor at its edges (which caused hover flicker on the hero CTAs). */
-.btn::after {
-  content: ""; position: absolute; inset: -4px; border-radius: inherit;
-}
-.btn:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; transform: translateY(-2px); }
+/* Hover lift is a SHADOW only — the element's geometry never changes, so the
+   cursor can't fall out of the button's hitbox at the edges (no flicker). */
+.btn:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; box-shadow: 0 6px 14px rgba(47,111,237,0.35); }
 .btn--ghost { background: transparent; color: var(--brown); }
-.btn--ghost:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; }
+.btn--ghost:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; box-shadow: 0 6px 14px rgba(47,111,237,0.35); }
 
 /* ============================================================
    Header
@@ -153,8 +149,8 @@ img { max-width: 100%; display: block; }
    menu (spanning its full width), not an underline on the nav item — matches
    the Kids Can Press pattern. */
 .submenu {
-  position: absolute; top: calc(100% + 0.2rem); left: 0; min-width: 220px;
-  background: var(--paper); border: 0; border-top: 4px solid var(--gold-deep);
+  position: absolute; top: 100%; left: 0; min-width: 220px;
+  background: var(--paper); border: 0; border-top: 3px solid var(--gold-deep);
   border-radius: 0 0 4px 4px;
   box-shadow: 0 14px 28px var(--shadow); padding: 0;
   list-style: none; margin: 0; z-index: 60;
@@ -177,7 +173,7 @@ img { max-width: 100%; display: block; }
   display: block; padding: 0.7rem 1.1rem; border-radius: 0;
   font-family: var(--label); font-size: 0.88rem; color: var(--ink); text-decoration: none;
 }
-.submenu a:hover { background: var(--paper-2); color: var(--brown); }
+.submenu a:hover { background: var(--paper-2); color: var(--ink); }
 
 /* Header search */
 .nav-search { position: relative; display: flex; align-items: center; align-self: center; }
