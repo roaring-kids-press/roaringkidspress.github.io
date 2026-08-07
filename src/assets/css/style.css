@@ -7,18 +7,18 @@
    Space Grotesk for small caps labels/data.
    ============================================================ */
 :root {
-  /* Theme A — Bright & White (crayon-box on white) */
+  /* Theme A — Bright & White; sunny primary, blue accent */
   --ink: #25324b;
   --ink-soft: #5a6b86;
   --paper: #ffffff;
-  --paper-2: #f2f6ff;
-  --brown: #2f6fed;        /* primary (blue) — used across nav, footer, buttons */
-  --gold: #ffb703;         /* sunny yellow accent */
-  --gold-deep: #f08a24;    /* deep orange accent */
+  --paper-2: #fff8ea;
+  --brown: #f08a24;        /* PRIMARY (warm orange) — nav, footer, buttons */
+  --gold: #2f6fed;         /* ACCENT (blue) */
+  --gold-deep: #2f6fed;    /* accent deep (blue) */
   --green: #2bb673;
   --clay: #ff5d8f;         /* pink */
-  --line: #e3ebf7;
-  --shadow: rgba(40, 60, 100, 0.14);
+  --line: #ffe6c2;
+  --shadow: rgba(120, 80, 20, 0.14);
 
   --display: "Fraunces", Georgia, serif;
   --body: "Nunito", system-ui, sans-serif;
@@ -120,6 +120,7 @@ img { max-width: 100%; display: block; }
 .brand-mark .spine:nth-child(1) { height: 30px; background: var(--brown); }
 .brand-mark .spine:nth-child(2) { height: 42px; background: var(--gold); }
 .brand-mark .spine:nth-child(3) { height: 36px; background: var(--clay); }
+.brand-mark .spine:nth-child(4) { height: 24px; background: var(--green); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.08; }
 .brand-name { font-family: var(--display); font-weight: 900; font-size: 1.87rem; letter-spacing: -0.015em; }
 .brand-tag { font-size: 0.99rem; color: var(--ink-soft); }
@@ -262,10 +263,7 @@ img { max-width: 100%; display: block; }
 .hero { position: relative; overflow: hidden; padding: clamp(3rem, 8vw, 6rem) 0 clamp(2.5rem, 6vw, 4rem); }
 .hero::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
-  background:
-    radial-gradient(60% 80% at 85% 10%, color-mix(in srgb, var(--gold) 22%, transparent), transparent 70%),
-    radial-gradient(50% 70% at 5% 90%, color-mix(in srgb, var(--green) 20%, transparent), transparent 70%),
-    var(--paper);
+  background: var(--paper);
 }
 .hero-inner { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
 .hero h1 span { color: var(--gold-deep); }
@@ -419,9 +417,9 @@ img { max-width: 100%; display: block; }
 /* ============================================================
    Footer
    ============================================================ */
-.site-footer { background: var(--brown); color: #eaf1ff; margin-top: 4rem; padding: 3rem 0 1.5rem; }
-.site-footer a { color: #ffd166; }
-.site-footer a:hover { color: #fff; }
+.site-footer { background: var(--brown); color: #fff6ea; margin-top: 4rem; padding: 3rem 0 1.5rem; }
+.site-footer a { color: #ffffff; }
+.site-footer a:hover { color: #eaf3ff; }
 .footer-grid { display: grid; grid-template-columns: 1.2fr 1.4fr 1fr; gap: 2.5rem; }
 .footer-brand .brand-name { font-family: var(--display); font-size: 1.5rem; font-weight: 900; color: #ffffff; }
 .footer-keywords { font-family: var(--label); font-size: 0.7rem; letter-spacing: 0.16em; margin-top: 0.4rem; }
@@ -431,7 +429,7 @@ img { max-width: 100%; display: block; }
 .signup button { border: 0; border-radius: 999px; padding: 0.65rem 1.2rem; background: var(--gold); color: var(--brown); font-family: var(--label); font-weight: 600; cursor: pointer; }
 .signup button:hover { background: #fff; }
 .footer-legal { border-top: 1px solid color-mix(in srgb, #fff 18%, transparent); margin-top: 2.2rem; padding-top: 1.2rem; }
-.footer-legal p { font-size: 0.8rem; margin: 0; color: #c3d4f5; }
+.footer-legal p { font-size: 0.8rem; margin: 0; color: #ffe4c2; }
 
 @media (max-width: 800px) {
   .hero-inner, .book-detail { grid-template-columns: 1fr; }

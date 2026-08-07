@@ -136,11 +136,11 @@
 
       let paused = false;
       let dragging = false;
-      const pxPerSec = 26;   // constant speed regardless of display refresh rate
+      const pxPerSec = 32;   // constant speed regardless of display refresh rate
       let lastTs = null;
-      let carry = 0;         // accumulates sub-pixel movement between frames
+      let pos = 0;           // fractional source-of-truth for the scroll position
 
-      function seatMiddle() { if (setWidth > 0) viewport.scrollLeft = setWidth * 0.5; }
+      function seatMiddle() { if (setWidth > 0) { viewport.scrollLeft = setWidth * 0.5; pos = viewport.scrollLeft; } }
 
       function init() {
         build();
@@ -152,21 +152,24 @@
       let rz;
       window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(init, 200); });
 
+      let wasStopped = true;
+      let lastWritten = -1;    // last scrollLeft WE wrote (to ignore our own scroll events)
       function tick(ts) {
         if (lastTs == null) lastTs = ts;
         const dt = Math.min((ts - lastTs) / 1000, 0.1); // seconds, clamp long gaps
         lastTs = ts;
-        if (!reduce && !paused && !dragging) {
-          // Accumulate fractional distance; only apply whole pixels, because
-          // browsers floor sub-pixel scrollLeft increments (which stalled the
-          // carousel on high-refresh-rate desktop displays).
-          carry += pxPerSec * dt;
-          const whole = Math.floor(carry);
-          if (whole >= 1) {
-            viewport.scrollLeft += whole;
-            carry -= whole;
-            wrap();
+        const running = !reduce && !paused && !dragging;
+        if (running) {
+          if (wasStopped) { pos = viewport.scrollLeft; wasStopped = false; }
+          pos += pxPerSec * dt;
+          if (setWidth > 0) {
+            if (pos >= setWidth) pos -= setWidth;
+            else if (pos < 0) pos += setWidth;
           }
+          viewport.scrollLeft = pos;
+          lastWritten = viewport.scrollLeft;   // read back the rounded value
+        } else {
+          wasStopped = true;
         }
         requestAnimationFrame(tick);
       }
@@ -258,20 +261,20 @@
       // position inside [0, setWidth) so it loops seamlessly in BOTH directions.
       let scrollWrapRAF = null;
       viewport.addEventListener('scroll', () => {
+        // Ignore scroll events caused by our own auto-scroll writes.
+        if (Math.abs(viewport.scrollLeft - lastWritten) < 2) return;
         if (dragging) return;              // drag handler manages its own wrapping
         if (scrollWrapRAF) return;
         scrollWrapRAF = requestAnimationFrame(() => {
           scrollWrapRAF = null;
           if (setWidth <= 0) return;
-          // Re-seat before hitting either wall so momentum never reaches the clamp.
           const buffer = setWidth * 0.25;
           if (viewport.scrollLeft < buffer) {
             viewport.scrollLeft += setWidth;
           } else if (viewport.scrollLeft > setWidth + buffer) {
             viewport.scrollLeft -= setWidth;
           }
-          // any manual scroll counts as interaction → brief auto-scroll pause
-          armPause(400);
+          armPause(400);   // real user scroll → brief auto-scroll pause
         });
       }, { passive: true });
 
