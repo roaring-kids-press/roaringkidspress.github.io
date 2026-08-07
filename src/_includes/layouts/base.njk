@@ -21,23 +21,64 @@
   </main>
   {% include "partials/footer.njk" %}
   <script>
-    // Mobile nav toggle
-    document.querySelector('.nav-toggle')?.addEventListener('click', function () {
+    // Mobile nav: hamburger toggle + drill-down submenus with back arrow.
+    (function () {
+      const toggle = document.querySelector('.nav-toggle');
       const nav = document.getElementById('site-nav');
-      const open = nav.classList.toggle('is-open');
-      this.setAttribute('aria-expanded', open);
-    });
+      if (!toggle || !nav) return;
+      const isMobile = () => window.matchMedia('(max-width: 800px)').matches;
 
-    // On touch/mobile, let a tap open a submenu instead of following the link on first tap
-    document.querySelectorAll('.has-submenu > a').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        if (window.matchMedia('(max-width: 800px)').matches) {
-          const li = a.parentElement;
-          const wasOpen = li.classList.contains('open');
-          if (!wasOpen) { e.preventDefault(); li.classList.add('open'); a.setAttribute('aria-expanded', 'true'); }
-        }
+      function closeAll() {
+        nav.classList.remove('is-open');
+        nav.classList.remove('submenu-open');
+        // reset any opened drill-down so it always opens fresh next time
+        nav.querySelectorAll('.nav-item.open').forEach(li => li.classList.remove('open'));
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      function openMenu() {
+        nav.querySelectorAll('.nav-item.open').forEach(li => li.classList.remove('open'));
+        nav.classList.remove('submenu-open');
+        nav.classList.add('is-open');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+
+      toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (nav.classList.contains('is-open')) closeAll(); else openMenu();
       });
-    });
+
+      // Tap a parent item on mobile → drill into its submenu (fresh)
+      document.querySelectorAll('.has-submenu > a').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          if (!isMobile()) return;   // desktop untouched (hover handles it)
+          e.preventDefault();
+          const li = a.parentElement;
+          nav.querySelectorAll('.nav-item.open').forEach(o => { if (o !== li) o.classList.remove('open'); });
+          li.classList.add('open');
+          nav.classList.add('submenu-open');
+        });
+      });
+
+      // Back arrow → return to the main list
+      document.querySelectorAll('.submenu-back').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault(); e.stopPropagation();
+          nav.querySelectorAll('.nav-item.open').forEach(li => li.classList.remove('open'));
+          nav.classList.remove('submenu-open');
+        });
+      });
+
+      // Click/tap outside the menu closes it (mobile)
+      document.addEventListener('click', function (e) {
+        if (!isMobile()) return;
+        if (!nav.classList.contains('is-open')) return;
+        if (nav.contains(e.target) || toggle.contains(e.target)) return;
+        closeAll();
+      });
+
+      // Reset state when crossing the breakpoint so desktop is always clean
+      window.matchMedia('(max-width: 800px)').addEventListener('change', closeAll);
+    })();
 
     // Mission slider: continuous cyclic auto-advance + per-slide timer bar + dots
     (function () {
@@ -258,15 +299,39 @@
       viewport.addEventListener('pointerup', endDrag);
       viewport.addEventListener('pointercancel', endDrag);
 
-      // Native scroll wrap: trackpad two-finger swipes and touch momentum produce
-      // real scroll events (not pointer drags). Without this, scrolling toward 0
-      // hits the left wall and "sticks" (desktop right-swipe bug). We keep the
-      // position inside [0, setWidth) so it loops seamlessly in BOTH directions.
+      // Native scroll wrap: trackpad/touch momentum produces real scroll events.
+      // We only act on scroll events that follow an ACTUAL user gesture (wheel or
+      // touch) — never on incidental scrolls or our own auto-scroll writes. This
+      // stops the mobile "restart" where vertical page scrolling nudged the
+      // carousel and triggered a re-seat.
+      let userScrolling = false;
+      let userScrollTimer = null;
+      function markUserScroll() {
+        userScrolling = true;
+        clearTimeout(userScrollTimer);
+        userScrollTimer = setTimeout(() => { userScrolling = false; }, 250);
+      }
+      viewport.addEventListener('wheel', (e) => {
+        // horizontal wheel/trackpad only
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) markUserScroll();
+      }, { passive: true });
+      let tStartX = 0, tStartY = 0;
+      viewport.addEventListener('touchstart', (e) => {
+        if (e.touches[0]) { tStartX = e.touches[0].clientX; tStartY = e.touches[0].clientY; }
+      }, { passive: true });
+      viewport.addEventListener('touchmove', (e) => {
+        if (!e.touches[0]) return;
+        const dx = Math.abs(e.touches[0].clientX - tStartX);
+        const dy = Math.abs(e.touches[0].clientY - tStartY);
+        // Only a mostly-horizontal swipe counts; vertical page scroll is ignored.
+        if (dx > dy && dx > 8) markUserScroll();
+      }, { passive: true });
+
       let scrollWrapRAF = null;
       viewport.addEventListener('scroll', () => {
-        // Ignore scroll events caused by our own auto-scroll writes.
+        if (!userScrolling) return;               // ignore auto-scroll + incidental scrolls
         if (Math.abs(viewport.scrollLeft - lastWritten) < 2) return;
-        if (dragging || arrowScrolling) return;   // those manage their own wrapping
+        if (dragging || arrowScrolling) return;
         if (scrollWrapRAF) return;
         scrollWrapRAF = requestAnimationFrame(() => {
           scrollWrapRAF = null;
@@ -277,7 +342,7 @@
           } else if (viewport.scrollLeft > setWidth + buffer) {
             viewport.scrollLeft -= setWidth;
           }
-          armPause(400);   // real user scroll → brief auto-scroll pause
+          armPause(400);
         });
       }, { passive: true });
 
