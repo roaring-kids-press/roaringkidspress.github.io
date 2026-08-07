@@ -191,7 +191,16 @@
       requestAnimationFrame(() => requestAnimationFrame(init));
       window.addEventListener('load', init);
       let rz;
-      window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(init, 200); });
+      let lastWidth = window.innerWidth;
+      window.addEventListener('resize', () => {
+        // Mobile browsers fire 'resize' when the address bar shows/hides on the
+        // first scroll — but that only changes HEIGHT, not width. Rebuilding then
+        // re-seats the carousel and looks like a "restart". Only rebuild when the
+        // width actually changes.
+        if (window.innerWidth === lastWidth) return;
+        lastWidth = window.innerWidth;
+        clearTimeout(rz); rz = setTimeout(init, 200);
+      });
 
       let wasStopped = true;
       let lastWritten = -1;    // last scrollLeft WE wrote (to ignore our own scroll events)

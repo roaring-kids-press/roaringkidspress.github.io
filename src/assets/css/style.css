@@ -234,10 +234,11 @@ img { max-width: 100%; display: block; }
   .nav-list { flex-direction: column; gap: 0; align-items: stretch; padding: 0.25rem 0; }
   .nav-item { border-bottom: 1px solid #d9dde3; display: block; }
   .nav-item:last-child { border-bottom: 0; }
-  .nav-item > a { padding: 0.95rem 1.25rem; justify-content: space-between; }
+  .nav-item > a { display: flex; width: 100%; padding: 0.95rem 1.25rem; justify-content: space-between; align-items: center; }
   .nav-item .caret { display: none; }              /* replaced by a chevron affordance */
   .has-submenu > a::after {
-    content: "›"; font-size: 1.2rem; color: var(--ink-soft); line-height: 1;
+    content: "›"; font-size: 1.35rem; color: var(--ink-soft); line-height: 1;
+    display: inline-block; transform: translateY(-0.08em);   /* optical vertical centering */
   }
 
   /* Drill-down: when a submenu is open, hide the main list and show the panel */
@@ -262,7 +263,7 @@ img { max-width: 100%; display: block; }
     font-family: var(--label); font-weight: 700; font-size: 0.86rem;
     letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink);
   }
-  .submenu-back .back-arrow { font-size: 1.4rem; line-height: 1; color: var(--brown); }
+  .submenu-back .back-arrow { font-size: 1.5rem; line-height: 1; color: var(--brown); display: inline-block; transform: translateY(-0.06em); }
   .submenu a { padding: 0.95rem 1.25rem; border-top: 0; }
   .submenu li + li a { border-top: 1px solid #d9dde3; }
   .submenu-head + li a { border-top: 0; }
