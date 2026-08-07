@@ -184,27 +184,30 @@
         const c = track.querySelector('.carousel-card');
         return (c ? c.offsetWidth + 26 : 220) * 2;
       }
-      prev.addEventListener('click', () => {
-        armPause(700);
+      let arrowScrolling = false;
+      function arrowGo(dir) {
+        // Pause auto-scroll and suppress the native scroll-wrap while we animate.
+        armPause(800);
+        arrowScrolling = true;
         const step = cardStep();
-        // If we're near the start, jump forward one whole set first (seamless,
-        // since content repeats) so there's room to smooth-scroll left into.
-        if (setWidth > 0 && viewport.scrollLeft < step) {
-          viewport.scrollLeft += setWidth;
+        // Pre-seat away from the edges so a full step always has room, keeping
+        // the loop seamless in both directions.
+        if (setWidth > 0) {
+          if (dir < 0 && viewport.scrollLeft < step)            viewport.scrollLeft += setWidth;
+          else if (dir > 0 && viewport.scrollLeft > setWidth)   viewport.scrollLeft -= setWidth;
         }
-        viewport.scrollBy({ left: -step, behavior: 'smooth' });
-        setTimeout(wrap, 450);
-      });
-      next.addEventListener('click', () => {
-        armPause(700);
-        const step = cardStep();
-        // Symmetric guard for the far end.
-        if (setWidth > 0 && viewport.scrollLeft > viewport.scrollWidth - viewport.clientWidth - step) {
-          viewport.scrollLeft -= setWidth;
-        }
-        viewport.scrollBy({ left: step, behavior: 'smooth' });
-        setTimeout(wrap, 450);
-      });
+        pos = viewport.scrollLeft;   // keep auto-scroll's position in sync
+        viewport.scrollBy({ left: dir * step, behavior: 'smooth' });
+        // After the smooth scroll settles, wrap once and re-enable.
+        clearTimeout(arrowGo._t);
+        arrowGo._t = setTimeout(() => {
+          wrap();
+          pos = viewport.scrollLeft;
+          arrowScrolling = false;
+        }, 500);
+      }
+      prev.addEventListener('click', () => arrowGo(-1));
+      next.addEventListener('click', () => arrowGo(1));
 
       // Drag / swipe (mouse + touch), direction-aware so a vertical page
       // scroll on mobile is NOT hijacked as a horizontal drag.
@@ -263,7 +266,7 @@
       viewport.addEventListener('scroll', () => {
         // Ignore scroll events caused by our own auto-scroll writes.
         if (Math.abs(viewport.scrollLeft - lastWritten) < 2) return;
-        if (dragging) return;              // drag handler manages its own wrapping
+        if (dragging || arrowScrolling) return;   // those manage their own wrapping
         if (scrollWrapRAF) return;
         scrollWrapRAF = requestAnimationFrame(() => {
           scrollWrapRAF = null;

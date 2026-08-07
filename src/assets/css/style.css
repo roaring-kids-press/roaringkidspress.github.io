@@ -91,7 +91,7 @@ img { max-width: 100%; display: block; }
 }
 .btn:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; transform: translateY(-2px); }
 .btn--ghost { background: transparent; color: var(--brown); }
-.btn--ghost:hover { background: var(--brown); color: var(--paper); }
+.btn--ghost:hover { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; }
 
 /* ============================================================
    Header
@@ -100,7 +100,7 @@ img { max-width: 100%; display: block; }
   position: sticky; top: 0; z-index: 50;
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 3px solid #d9dde3;   /* thicker grey rule under the whole header */
 }
 /* Two-row header: top = brand + search, bottom = nav. No divider between;
    reads as one unit. */
@@ -126,67 +126,49 @@ img { max-width: 100%; display: block; }
 .brand-tag { font-size: 0.99rem; color: var(--ink-soft); }
 
 /* Nav */
-.site-nav { display: flex; align-items: stretch; gap: 1.5rem; }
-.nav-list { display: flex; gap: 1.3rem; list-style: none; margin: 0; padding: 0; align-items: stretch; }
-.nav-item { position: relative; display: flex; align-items: stretch; }
+.site-nav { display: flex; align-items: center; gap: 1.5rem; }
+.nav-list { display: flex; gap: 1.3rem; list-style: none; margin: 0; padding: 0; align-items: center; }
+.nav-item { position: relative; display: flex; align-items: center; }
 .nav-item > a {
   position: relative;
-  display: inline-flex; align-items: flex-end; gap: 5px;
-  /* pull the label down toward the bar, leaving room below for the tick */
-  padding: 0 0 0.55rem 0;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 0.35rem 0;
   font-family: var(--label); font-weight: 600; font-size: 0.86rem;
   letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
   color: var(--ink); text-decoration: none;
 }
-.nav-item > a[aria-current="page"] { color: var(--brown); }
-
-/* Animated underline: a bar pinned to the header's bottom edge that
-   grows left-to-right on hover/focus. */
-.nav-item > a::after {
-  content: ""; position: absolute; left: 0; right: 0;
-  bottom: -1px;           /* sits on the header's 1px bottom border */
-  height: 3px; background: var(--gold);
-  transform: scaleX(0); transform-origin: left center;
-  transition: transform .28s ease;
-}
-.nav-item > a:hover::after,
-.nav-item > a:focus-visible::after,
-.nav-item:focus-within > a::after,
-.nav-item > a[aria-current="page"]::after { transform: scaleX(1); }
-
-/* Little up-arrow tab riding on the left of the underline (per reference).
-   Sits just above the 3px underline and points upward. */
-.nav-item > a::before {
-  content: ""; position: absolute; left: 14px; bottom: 2px;
-  width: 0; height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 7px solid var(--gold);
-  opacity: 0; transform: translateY(4px);
-  transition: opacity .2s ease .05s, transform .2s ease .05s;
-}
-.nav-item > a:hover::before,
-.nav-item > a:focus-visible::before,
-.nav-item:focus-within > a::before,
-.nav-item > a[aria-current="page"]::before { opacity: 1; transform: translateY(0); }
+.nav-item > a:hover,
+.nav-item:focus-within > a { color: var(--brown); }
 
 .nav-item .caret { font-size: 0.62rem; transition: transform .15s ease; }
 .nav-item:hover .caret { transform: rotate(180deg); }
 
-/* Dropdown submenus (hover on desktop) */
+/* Dropdown submenus (hover on desktop). The colored bar is the TOP EDGE of the
+   menu (spanning its full width), not an underline on the nav item — matches
+   the Kids Can Press pattern. */
 .submenu {
-  position: absolute; top: 100%; left: 0; min-width: 210px;
-  background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
-  box-shadow: 0 12px 28px var(--shadow); padding: 0.4rem;
+  position: absolute; top: 100%; left: 0; min-width: 220px;
+  background: var(--paper); border: 0; border-top: 4px solid var(--gold-deep);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 14px 28px var(--shadow); padding: 0;
   list-style: none; margin: 0; z-index: 60;
   opacity: 0; visibility: hidden; transform: translateY(6px);
   transition: opacity .15s ease, transform .15s ease, visibility .15s;
 }
+/* small centered pointer sitting on the colored top edge */
+.submenu::before {
+  content: ""; position: absolute; top: -10px; left: 28px;
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--gold-deep);
+}
 .has-submenu:hover > .submenu,
 .has-submenu:focus-within > .submenu { opacity: 1; visibility: visible; transform: translateY(0); }
 .submenu li { border: 0; }
+.submenu li + li a { border-top: 1px solid var(--line); }   /* thin dividers between items */
 .submenu a {
-  display: block; padding: 0.55rem 0.8rem; border-radius: 7px;
+  display: block; padding: 0.7rem 1.1rem; border-radius: 0;
   font-family: var(--label); font-size: 0.88rem; color: var(--ink); text-decoration: none;
 }
 .submenu a:hover { background: var(--paper-2); color: var(--brown); }
@@ -248,12 +230,13 @@ img { max-width: 100%; display: block; }
   .nav-list { flex-direction: column; gap: 0; align-items: stretch; }
   .nav-item { border-bottom: 1px solid var(--line); }
   .nav-item > a { padding: 0.85rem 0; }
-  .nav-item > a::after, .nav-item > a::before { display: none; } /* no underline tab on mobile */
   .submenu {
     position: static; opacity: 1; visibility: visible; transform: none;
-    box-shadow: none; border: 0; border-radius: 0; padding: 0 0 0.5rem 0.8rem;
+    box-shadow: none; border: 0; border-top: 0; border-radius: 0; padding: 0 0 0.5rem 0.8rem;
     display: none;
   }
+  .submenu::before { display: none; }   /* no pointer on mobile stacked menu */
+  .submenu li + li a { border-top: 0; }
   .nav-item.open > .submenu { display: block; }
 }
 
@@ -425,9 +408,9 @@ img { max-width: 100%; display: block; }
 .footer-keywords { font-family: var(--label); font-size: 0.7rem; letter-spacing: 0.16em; margin-top: 0.4rem; }
 .site-footer h2 { font-size: 1.15rem; color: #ffffff; }
 .signup { display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
-.signup input { flex: 1 1 180px; padding: 0.65rem 0.9rem; border-radius: 999px; border: 0; font-family: var(--body); }
-.signup button { border: 0; border-radius: 999px; padding: 0.65rem 1.2rem; background: var(--gold); color: var(--brown); font-family: var(--label); font-weight: 600; cursor: pointer; }
-.signup button:hover { background: #fff; }
+.signup input { flex: 1 1 180px; padding: 0.65rem 0.9rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.5); font-family: var(--body); }
+.signup button { border: 0; border-radius: 999px; padding: 0.65rem 1.2rem; background: #fff; color: var(--brown); font-family: var(--label); font-weight: 600; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.signup button:hover { background: var(--gold-deep); color: #fff; }
 .footer-legal { border-top: 1px solid color-mix(in srgb, #fff 18%, transparent); margin-top: 2.2rem; padding-top: 1.2rem; }
 .footer-legal p { font-size: 0.8rem; margin: 0; color: #ffe4c2; }
 
@@ -516,7 +499,10 @@ img { max-width: 100%; display: block; }
 
 /* Large signup (newsletter page) */
 .signup--lg { max-width: 480px; }
-.signup--lg input { flex: 1 1 100%; }
+.signup--lg input { flex: 1 1 100%; border: 1.5px solid var(--line); }
+.signup--lg input:focus { outline: none; border-color: var(--gold-deep); }
+.signup--lg button { background: var(--brown); color: #fff; }
+.signup--lg button:hover { background: var(--gold-deep); color: #fff; }
 
 /* Series page: accent underline beneath the title (replaces the old top border
    that collided with the nav underline) */
