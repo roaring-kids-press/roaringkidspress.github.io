@@ -5,7 +5,7 @@
     "brand": "Zavi",
     "blurb": "Fear-facing adventures where a curious young boy learns that brave doesn't mean unafraid.",
     "ages": "4–8",
-    "accent": "#C8963E"
+    "accent": "#FFB703"
   },
   {
     "slug": "grow-with-zavi",
@@ -13,7 +13,7 @@
     "brand": "Zavi",
     "blurb": "Everyday moments and family skills. Enjoy first swims, big trips, and the little firsts that feel enormous.",
     "ages": "4–8",
-    "accent": "#7A9E7E"
+    "accent": "#2BB673"
   },
   {
     "slug": "learn-with-zavi",
@@ -21,6 +21,6 @@
     "brand": "Zavi",
     "blurb": "Early-learning concepts introduced through play, color, and a familiar friendly face.",
     "ages": "3–6",
-    "accent": "#C36B54"
+    "accent": "#FF5D8F"
   }
 ]

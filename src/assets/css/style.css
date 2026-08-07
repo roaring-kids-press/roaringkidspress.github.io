@@ -7,17 +7,18 @@
    Space Grotesk for small caps labels/data.
    ============================================================ */
 :root {
-  --ink: #2b2018;
-  --ink-soft: #5c4a3c;
-  --paper: #faf5ec;
-  --paper-2: #f3e9d8;
-  --brown: #5c3d2e;
-  --gold: #c8963e;
-  --gold-deep: #a9761f;
-  --green: #7a9e7e;
-  --clay: #c36b54;
-  --line: #e3d5bf;
-  --shadow: rgba(59, 40, 24, 0.14);
+  /* Theme A — Bright & White (crayon-box on white) */
+  --ink: #25324b;
+  --ink-soft: #5a6b86;
+  --paper: #ffffff;
+  --paper-2: #f2f6ff;
+  --brown: #2f6fed;        /* primary (blue) — used across nav, footer, buttons */
+  --gold: #ffb703;         /* sunny yellow accent */
+  --gold-deep: #f08a24;    /* deep orange accent */
+  --green: #2bb673;
+  --clay: #ff5d8f;         /* pink */
+  --line: #e3ebf7;
+  --shadow: rgba(40, 60, 100, 0.14);
 
   --display: "Fraunces", Georgia, serif;
   --body: "Nunito", system-ui, sans-serif;
@@ -418,19 +419,19 @@ img { max-width: 100%; display: block; }
 /* ============================================================
    Footer
    ============================================================ */
-.site-footer { background: var(--brown); color: #f4e6cf; margin-top: 4rem; padding: 3rem 0 1.5rem; }
-.site-footer a { color: var(--gold); }
+.site-footer { background: var(--brown); color: #eaf1ff; margin-top: 4rem; padding: 3rem 0 1.5rem; }
+.site-footer a { color: #ffd166; }
 .site-footer a:hover { color: #fff; }
 .footer-grid { display: grid; grid-template-columns: 1.2fr 1.4fr 1fr; gap: 2.5rem; }
-.footer-brand .brand-name { font-family: var(--display); font-size: 1.5rem; font-weight: 900; color: #fff5e6; }
+.footer-brand .brand-name { font-family: var(--display); font-size: 1.5rem; font-weight: 900; color: #ffffff; }
 .footer-keywords { font-family: var(--label); font-size: 0.7rem; letter-spacing: 0.16em; margin-top: 0.4rem; }
-.site-footer h2 { font-size: 1.15rem; color: #fff5e6; }
+.site-footer h2 { font-size: 1.15rem; color: #ffffff; }
 .signup { display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap; }
 .signup input { flex: 1 1 180px; padding: 0.65rem 0.9rem; border-radius: 999px; border: 0; font-family: var(--body); }
 .signup button { border: 0; border-radius: 999px; padding: 0.65rem 1.2rem; background: var(--gold); color: var(--brown); font-family: var(--label); font-weight: 600; cursor: pointer; }
 .signup button:hover { background: #fff; }
 .footer-legal { border-top: 1px solid color-mix(in srgb, #fff 18%, transparent); margin-top: 2.2rem; padding-top: 1.2rem; }
-.footer-legal p { font-size: 0.8rem; margin: 0; color: #d8c4a2; }
+.footer-legal p { font-size: 0.8rem; margin: 0; color: #c3d4f5; }
 
 @media (max-width: 800px) {
   .hero-inner, .book-detail { grid-template-columns: 1fr; }

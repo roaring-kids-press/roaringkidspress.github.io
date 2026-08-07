@@ -203,21 +203,38 @@
         setTimeout(wrap, 450);
       });
 
-      // Drag / swipe (mouse + touch)
-      let startX = 0, startScroll = 0, moved = false;
+      // Drag / swipe (mouse + touch), direction-aware so a vertical page
+      // scroll on mobile is NOT hijacked as a horizontal drag.
+      let startX = 0, startY = 0, startScroll = 0, moved = false, axis = null;
       viewport.addEventListener('pointerdown', (e) => {
-        dragging = true; moved = false;
-        startX = e.clientX; startScroll = viewport.scrollLeft;
-        viewport.setPointerCapture(e.pointerId);
+        // Only left mouse button / touch / pen
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        dragging = true; moved = false; axis = null;
+        startX = e.clientX; startY = e.clientY; startScroll = viewport.scrollLeft;
         viewport.classList.add('is-dragging');
       });
       viewport.addEventListener('pointermove', (e) => {
         if (!dragging) return;
         const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        // Decide the gesture axis once, after a small threshold.
+        if (axis === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+          axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (axis === 'x') {
+            // Now that we know it's a horizontal drag, capture the pointer.
+            try { viewport.setPointerCapture(e.pointerId); } catch (_) {}
+          } else {
+            // Vertical intent → release the gesture so the PAGE scrolls,
+            // and don't touch scrollLeft (this fixes the mobile "restart").
+            dragging = false;
+            viewport.classList.remove('is-dragging');
+            return;
+          }
+        }
+        if (axis !== 'x') return;
+        e.preventDefault();
         if (Math.abs(dx) > 4) moved = true;
         let target = startScroll - dx;
-        // Wrap the target into the loop range and shift startScroll by the
-        // same amount so the gesture stays perfectly 1:1 in both directions.
         if (setWidth > 0) {
           while (target >= setWidth) { target -= setWidth; startScroll -= setWidth; }
           while (target < 0)         { target += setWidth; startScroll += setWidth; }
@@ -225,8 +242,8 @@
         viewport.scrollLeft = target;
       });
       function endDrag(e) {
-        if (!dragging) return;
-        dragging = false;
+        if (!dragging && axis !== 'x') { axis = null; return; }
+        dragging = false; axis = null;
         viewport.classList.remove('is-dragging');
         try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
         wrap();
@@ -234,7 +251,29 @@
       }
       viewport.addEventListener('pointerup', endDrag);
       viewport.addEventListener('pointercancel', endDrag);
-      viewport.addEventListener('pointerleave', (e) => { if (dragging) endDrag(e); });
+
+      // Native scroll wrap: trackpad two-finger swipes and touch momentum produce
+      // real scroll events (not pointer drags). Without this, scrolling toward 0
+      // hits the left wall and "sticks" (desktop right-swipe bug). We keep the
+      // position inside [0, setWidth) so it loops seamlessly in BOTH directions.
+      let scrollWrapRAF = null;
+      viewport.addEventListener('scroll', () => {
+        if (dragging) return;              // drag handler manages its own wrapping
+        if (scrollWrapRAF) return;
+        scrollWrapRAF = requestAnimationFrame(() => {
+          scrollWrapRAF = null;
+          if (setWidth <= 0) return;
+          // Re-seat before hitting either wall so momentum never reaches the clamp.
+          const buffer = setWidth * 0.25;
+          if (viewport.scrollLeft < buffer) {
+            viewport.scrollLeft += setWidth;
+          } else if (viewport.scrollLeft > setWidth + buffer) {
+            viewport.scrollLeft -= setWidth;
+          }
+          // any manual scroll counts as interaction → brief auto-scroll pause
+          armPause(400);
+        });
+      }, { passive: true });
 
       track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
       track.addEventListener('dragstart', (e) => e.preventDefault());
